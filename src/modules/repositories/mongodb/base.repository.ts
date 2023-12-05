@@ -1,7 +1,7 @@
 import { EntityTarget, MongoRepository } from 'typeorm';
 import { DataSource } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { options } from 'joi';
+
 export class BaseRepository<Entity> extends MongoRepository<Entity> {
   constructor(
     entityClass: EntityTarget<Entity>,

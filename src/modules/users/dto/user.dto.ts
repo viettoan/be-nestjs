@@ -3,15 +3,14 @@ import {
   IsEmail,
   IsIn,
   IsInt,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
-  Max,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import { PaginationDto } from '../../../dto/pagination.dto';
+import { Transform } from 'class-transformer';
 
 export const createUserSchema = Joi.object({
   name: Joi.string().required(),
@@ -37,6 +36,7 @@ export class CreateOrUpdateUserDto {
   @IsOptional()
   password: string;
   @IsInt()
+  @Transform(({ value }) => (+value ? +value : value))
   @IsIn([1, 2])
   level: number;
 }

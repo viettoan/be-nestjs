@@ -2,8 +2,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from '../middlewares/logger.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/mongodb/user.entity';
-import { MulterModule } from '@nestjs/platform-express';
 import { UsersModule } from './users/users.module';
+import { RepositoriesModule } from './repositories/repositories.module';
+import { EmailModule } from './email/email.module';
+
 @Module({
   imports: [
     // TypeOrmModule.forRoot({
@@ -24,9 +26,8 @@ import { UsersModule } from './users/users.module';
       useNewUrlParser: true,
       name: 'mongodbConnection',
     }),
-    MulterModule.register({
-      dest: './storage/upload',
-    }),
+    EmailModule,
+    RepositoriesModule,
     UsersModule,
   ],
 })

@@ -10,18 +10,20 @@ import {
   Put,
   NotFoundException,
   Delete,
+  UseInterceptors, UploadedFile,
 } from '@nestjs/common';
 import { Response } from 'express';
-import {
-  ListUserWithPaginateDto,
-  CreateOrUpdateUserDto,
-} from './dto/user.dto';
+import { ListUserWithPaginateDto, CreateOrUpdateUserDto } from './dto/user.dto';
 import { UsersService } from './services/mongodb/users.service';
-import { responseSuccess } from '../../common/helpers';
+import { responseErrors, responseSuccess } from '../../common/helpers';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path, { extname } from 'path';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
   @Get()
   @HttpCode(200)
   async index(
@@ -34,16 +36,49 @@ export class UsersController {
       ),
     );
   }
+
   @Get(':userId')
   @HttpCode(200)
   async show(@Param('userId') userId: string, @Res() response: Response) {
-    return response.json(responseSuccess(await this.usersService.show(userId)));
+    try {
+      return response.json(
+        responseSuccess(await this.usersService.show(userId)),
+      );
+    } catch (e) {
+      return response.json(responseErrors(e, e.statusCode));
+    }
   }
+
   @Post()
   @HttpCode(200)
-  async store(@Body() user: CreateOrUpdateUserDto, @Res() response: Response) {
-    return response.json(responseSuccess(await this.usersService.store(user)));
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: path.resolve('./storage/upload'),
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  async store(
+    @UploadedFile() avatar: Express.Multer.File,
+    @Body() user: CreateOrUpdateUserDto,
+    @Res() response: Response,
+  ) {
+    try {
+      return response.json(
+        responseSuccess(await this.usersService.store(user)),
+      );
+    } catch (e) {
+      return response.json(responseErrors(e, e.statusCode));
+    }
   }
+
   @Put(':userId')
   @HttpCode(200)
   async update(
@@ -51,20 +86,28 @@ export class UsersController {
     @Body() user: CreateOrUpdateUserDto,
     @Res() response: Response,
   ) {
-    const updatedUser = await this.usersService.update(userId, user);
-    if (!updatedUser) {
-      throw new NotFoundException('User not found');
+    try {
+      const updatedUser = await this.usersService.update(userId, user);
+
+      if (!updatedUser) {
+        throw new NotFoundException('User not found');
+      }
+
+      return response.json(responseSuccess(updatedUser));
+    } catch (e) {
+      return response.json(responseErrors(e, e.statusCode));
     }
-    return response.json(responseSuccess(updatedUser));
   }
+
   @Delete(':userId')
   @HttpCode(200)
-  async destroy(
-    @Param('userId') userId: string,
-    @Res() response: Response,
-  ) {
-    return response.json(
-      responseSuccess(await this.usersService.destroy(userId)),
-    );
+  async destroy(@Param('userId') userId: string, @Res() response: Response) {
+    try {
+      return response.json(
+        responseSuccess(await this.usersService.destroy(userId)),
+      );
+    } catch (e) {
+      return response.json(responseErrors(e, e.statusCode));
+    }
   }
 }
