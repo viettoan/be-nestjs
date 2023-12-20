@@ -1,4 +1,8 @@
 import { MongoServerError } from 'mongodb';
+import { ConfigService } from '@nestjs/config';
+import { genSalt, hash } from 'bcryptjs';
+
+const configService = new ConfigService();
 
 type responseType = {
   errors?: object;
@@ -37,7 +41,7 @@ export const responseErrors = (
   };
 };
 
-const handleMongoServerError = (
+export const handleMongoServerError = (
   errors: MongoServerError,
   status: number = 500,
 ): responseType => {
@@ -68,4 +72,12 @@ const handleMongoServerError = (
 
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export async function createBcryptHashPassword(
+  plainPassword: string,
+): Promise<string> {
+  const salt = await genSalt(+configService.get('BCRYPT_SALT_ROUND'));
+
+  return hash(plainPassword, salt);
 }

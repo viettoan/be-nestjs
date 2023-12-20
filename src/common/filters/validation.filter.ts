@@ -8,7 +8,7 @@ import { ValidationException } from '../exceptions/validation.exception';
 
 @Catch(ValidationException)
 export class ValidationFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost): any {
+  catch(exception: ValidationException, host: ArgumentsHost): any {
     const context = host.switchToHttp();
     const response = context.getResponse();
 

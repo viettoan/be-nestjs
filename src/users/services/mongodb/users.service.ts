@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../repositories/mongodb/user.repository';
 import { User } from '../../entities/mongodb/user.entity';
 import { EmailService } from '../../../email/services/email.service';
+import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
 
 @Injectable()
 export class UsersService {
@@ -19,17 +20,18 @@ export class UsersService {
   show(userId: string): Promise<User | null> {
     return this.userRepository.findOneById(userId);
   }
-  async store(user: User): Promise<User> {
-    const newUser = await this.userRepository.save(user);
+  async store(user: User): Promise<boolean> {
+    user.password = await createBcryptHashPassword(user.password);
+    const newUser = await this.userRepository.insertOne(user);
     this.emailService.sendEmailWithTemplate(
-      newUser.email,
+      user.email,
       'Welcome to Our Service',
       'welcome',
       {
-        name: newUser.name,
+        name: user.name,
       },
     );
-    return newUser;
+    return newUser.acknowledged;
   }
   async update(userId: string, user: User) {
     return await this.userRepository.updateById(userId, user);

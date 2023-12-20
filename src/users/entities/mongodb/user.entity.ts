@@ -1,38 +1,33 @@
-import {
-  Entity,
-  Column,
-  ObjectIdColumn,
-  ObjectId,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from 'typeorm';
+import { BaseEntity } from 'src/common/enitites/base.entity';
+import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
+import { Entity, Column, Unique, Index } from 'typeorm';
 
 @Entity('users')
-export class User {
-  @ObjectIdColumn()
-  _id?: ObjectId;
+export class User extends BaseEntity {
   @Column()
   name: string;
-  email: string;
+
   @Column()
+  @Index({
+    unique: true,
+  })
+  email: string;
+
+  @Column()
+  @Index({
+    unique: true,
+  })
   phone: string;
+
   @Column()
   avatar?: string;
+
   @Column()
   password: string;
-  @Column()
-  level: number;
-  @Column()
-  is_confirm_account?: number;
-  @ObjectIdColumn()
-  created_by?: ObjectId;
-  @ObjectIdColumn()
-  updated_by?: ObjectId;
-  @CreateDateColumn()
-  created_at?: Date;
-  @UpdateDateColumn()
-  updated_at?: Date;
-  @DeleteDateColumn()
-  deleted_at?: Date;
+
+  @Column({
+    nullable: true,
+    default: UserIsConfirmAccount.FALSE,
+  })
+  isConfirmAccount?: UserIsConfirmAccount;
 }

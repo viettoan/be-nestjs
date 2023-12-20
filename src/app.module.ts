@@ -36,6 +36,7 @@ import { GlobalInterceptor } from './common/interceptors/global.interceptor';
       ssl: false,
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      synchronize: true,
       name: 'mongodbConnection',
     }),
     EmailModule,

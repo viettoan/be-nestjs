@@ -8,7 +8,7 @@ import path from 'path';
 @Injectable()
 export class EmailService {
   private transporter: Transporter;
-  private templatesPath: string = './src/views/email_templates';
+  private templatesPath: string = './src/email/templates';
 
   constructor(private readonly configService: ConfigService) {
     this.transporter = createTransport({

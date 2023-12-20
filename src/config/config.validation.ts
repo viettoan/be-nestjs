@@ -9,4 +9,6 @@ export const validationSchema = Joi.object({
   MAIL_USER: Joi.string(),
   MAIL_PASSWORD: Joi.string(),
   MAIL_FROM: Joi.string(),
+
+  BCRYPT_SALT_ROUND: Joi.number().default(10),
 });
