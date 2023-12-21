@@ -1,13 +1,24 @@
-import { IsInt } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
-import { number } from 'joi';
-
+import { IsInt, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { toNumber } from '../transforms/toNumber.transform';
+import { ApiProperty } from '@nestjs/swagger';
 export class PaginationDto {
-  @IsInt({ message: 'Limit phải là kiểu số' })
-  @Transform(({ value }) => (+value ? +value : value))
-  @Type(() => number)
-  limit?: number;
-  @IsInt({ message: 'Page phải là kiểu số' })
-  @Transform(({ value }) => (+value ? +value : value))
-  page?: number;
+  @IsInt()
+  @Min(1)
+  @Transform(toNumber)
+  @ApiProperty({
+    default: 10,
+    required: false,
+    type: 'number',
+  })
+  limit: number = 10;
+  @IsInt()
+  @Min(1)
+  @Transform(toNumber)
+  @ApiProperty({
+    default: 1,
+    required: false,
+    type: 'number',
+  })
+  page: number = 1;
 }

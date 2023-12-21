@@ -14,14 +14,18 @@ import {
 } from '@nestjs/common';
 import {
   ListUserWithPaginateDto,
-  CreateOrUpdateUserDto,
+  CreateUserDto,
+  UpdateUserDto,
+  CreateUserMultipartDto,
+  UpdateUserMultipartDto,
 } from '../dto/user.dto';
 import { UsersService } from '../services/mongodb/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { USER } from 'src/common/constant/app.constant';
 
 @Controller('users')
 @ApiTags('users')
@@ -34,10 +38,7 @@ export class UsersController {
   @Get()
   @HttpCode(200)
   async index(@Query() query: ListUserWithPaginateDto): Promise<object> {
-    return await this.usersService.listWithPagination(
-      +query.limit,
-      +query.page,
-    );
+    return await this.usersService.listWithPagination(query.limit, query.page);
   }
 
   @Get(':userId')
@@ -51,7 +52,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
-        destination: path.resolve('./storage/upload'),
+        destination: path.resolve('./storage' + USER.AVATAR_PREFIX),
         filename: (req, file, cb) => {
           const randomName = Array(32)
             .fill(null)
@@ -62,20 +63,43 @@ export class UsersController {
       }),
     }),
   )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: CreateUserMultipartDto,
+  })
   async store(
-    @UploadedFile() avatar: Express.Multer.File,
-    @Body() user: CreateOrUpdateUserDto,
+    @Body() user: CreateUserMultipartDto,
+    @UploadedFile() avatar?: Express.Multer.File,
   ) {
-    return await this.usersService.store(user);
+    return await this.usersService.store(user, avatar);
   }
 
   @Put(':userId')
   @HttpCode(200)
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: path.resolve('./storage' + USER.AVATAR_PREFIX),
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: UpdateUserMultipartDto,
+  })
   async update(
     @Param('userId') userId: string,
-    @Body() user: CreateOrUpdateUserDto,
+    @Body() user: UpdateUserMultipartDto,
+    @UploadedFile() avatar?: Express.Multer.File,
   ) {
-    const updatedUser = await this.usersService.update(userId, user);
+    const updatedUser = await this.usersService.update(userId, user, avatar);
 
     if (!updatedUser) {
       throw new NotFoundException('User not found');

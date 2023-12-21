@@ -8,9 +8,14 @@ import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/config.validation';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalInterceptor } from './common/interceptors/global.interceptor';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'storage'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema,

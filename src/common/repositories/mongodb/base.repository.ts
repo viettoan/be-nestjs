@@ -17,14 +17,20 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
     limit: number = 10,
     page: number = 1,
     conditions: object = {},
-  ): Promise<object> {
+  ): Promise<{
+    data: Entity[];
+    total: number;
+    limit: number;
+    page: number;
+    totalPage: number;
+  }> {
     const [data, total] = await Promise.all([
       this.find({
         where: conditions,
         skip: limit * (page - 1),
         take: limit,
       }),
-      this.count({ ...conditions, deleted_at: null }),
+      this.count({ ...conditions, deletedAt: null }),
     ]);
     return {
       data,
@@ -84,7 +90,7 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
   ): Promise<boolean> {
     if (softDelete) {
       const updatedEntity = await this.findOneAndUpdate(query, {
-        $set: { deleted_at: new Date() },
+        $set: { deletedAt: new Date() },
       });
       if (!updatedEntity.value) {
         return false;
@@ -101,7 +107,7 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
           _id: new ObjectId(id),
         },
         {
-          $set: { deleted_at: new Date() },
+          $set: { deletedAt: new Date() },
         },
       );
       if (!updatedEntity.value) {
