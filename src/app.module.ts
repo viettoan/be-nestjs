@@ -10,6 +10,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalInterceptor } from './common/interceptors/global.interceptor';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { join } from 'path';
     }),
     EmailModule,
     UsersModule,
+    RolesModule,
   ],
   providers: [
     {

@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/common/enitites/base.entity';
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
-import { Entity, Column, Unique, Index } from 'typeorm';
+import { Entity, Column, Index } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseEntity {

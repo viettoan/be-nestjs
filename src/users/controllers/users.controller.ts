@@ -14,8 +14,6 @@ import {
 } from '@nestjs/common';
 import {
   ListUserWithPaginateDto,
-  CreateUserDto,
-  UpdateUserDto,
   CreateUserMultipartDto,
   UpdateUserMultipartDto,
 } from '../dto/user.dto';
@@ -24,16 +22,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
 import { USER } from 'src/common/constant/app.constant';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Get()
   @HttpCode(200)

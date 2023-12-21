@@ -10,12 +10,6 @@ export class BaseEntity {
   @ObjectIdColumn()
   _id?: ObjectId;
 
-  @ObjectIdColumn()
-  createdBy?: ObjectId;
-
-  @ObjectIdColumn()
-  updatedBy?: ObjectId;
-
   @CreateDateColumn()
   createdAt?: Date;
 
