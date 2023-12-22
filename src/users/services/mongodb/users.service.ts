@@ -42,12 +42,13 @@ export class UsersService {
   async store(
     user: CreateUserDto,
     avatar?: Express.Multer.File,
-  ): Promise<boolean> {
+  ): Promise<User> {
     user.password = await createBcryptHashPassword(user.password);
-    const newUser = await this.userRepository.insertOne({
+    const newUser = await this.userRepository.save({
       ...user,
       avatar: `${USER.AVATAR_PREFIX}/${avatar.filename}`,
     });
+
     this.emailService.sendEmailWithTemplate(
       user.email,
       'Welcome to Our Service',
@@ -56,28 +57,32 @@ export class UsersService {
         name: user.name,
       },
     );
-    return newUser.acknowledged;
+    return newUser;
   }
   async update(
     userId: string,
     user: UpdateUserDto,
     avatar?: Express.Multer.File,
   ) {
-    const dataUpdate: User = { ...user };
+    const dataUpdate: Partial<User> = { ...user };
 
     if (avatar) {
       dataUpdate.avatar = `${USER.AVATAR_PREFIX}/${avatar.filename}`;
+    }
+
+    if (user.password) {
+      user.password = await createBcryptHashPassword(user.password);
     }
     const userUpdated = await this.userRepository.updateById(
       userId,
       dataUpdate,
     );
-    userUpdated.avatar = getUrlFromStorage(
-      userUpdated.avatar,
-      this.configService.get('STORAGE'),
-    );
 
-    return userUpdated;
+    if (!userUpdated) {
+      return false;
+    }
+
+    return true;
   }
 
   async destroy(userId: string) {

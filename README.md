@@ -24,7 +24,14 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Project base using NestJS
+
+## Features
+- [X] Integrate Swagger
+- [X] Integrate SQL DB: MySQL
+- [X] Integrate NoSQL DB: MongoDB
+- [X] Manage Users: CRUD, Send mail
+- [X] Permission Policy
 
 ## Installation
 

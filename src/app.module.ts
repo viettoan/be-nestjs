@@ -43,6 +43,7 @@ import { RolesModule } from './roles/roles.module';
       useUnifiedTopology: true,
       useNewUrlParser: true,
       synchronize: true,
+      autoLoadEntities: true,
       name: 'mongodbConnection',
     }),
     EmailModule,

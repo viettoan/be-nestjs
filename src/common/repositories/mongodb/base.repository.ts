@@ -67,22 +67,15 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
     }
     return updatedEntity.value;
   }
-  async updateById(id: string, data: object): Promise<Entity | null> {
-    const updatedEntity = await this.findOneAndUpdate(
-      {
-        _id: new ObjectId(id),
-      },
-      {
-        $set: data,
-      },
-      {
-        returnDocument: 'after',
-      },
-    );
-    if (!updatedEntity.value) {
+  async updateById(id: string, data: Partial<Entity>): Promise<Entity | null> {
+    const entity = await this.findOneById(id);
+
+    if (!entity) {
       return null;
     }
-    return updatedEntity.value;
+    const entityUpdated = await this.save({ ...entity, ...data });
+
+    return entityUpdated;
   }
   async customDelete(
     query: object,
@@ -101,21 +94,19 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
     return deletedEntity.acknowledged;
   }
   async deleteById(id: string, softDelete: boolean = true): Promise<boolean> {
+    const entity = await this.findOneById(id);
+
+    if (!entity) {
+      return false;
+    }
+
     if (softDelete) {
-      const updatedEntity = await this.findOneAndUpdate(
-        {
-          _id: new ObjectId(id),
-        },
-        {
-          $set: { deletedAt: new Date() },
-        },
-      );
-      if (!updatedEntity.value) {
-        return false;
-      }
+      await this.softRemove(entity);
+
       return true;
     }
-    const deletedEntity = await this.deleteOne({ _id: new ObjectId(id) });
-    return deletedEntity.acknowledged;
+    await this.remove(entity);
+
+    return true;
   }
 }

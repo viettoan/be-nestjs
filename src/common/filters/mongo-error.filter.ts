@@ -21,14 +21,24 @@ export class MongoErrorFilter implements ExceptionFilter {
 
     switch (exception.code) {
       case 11000:
-        const [path, value] = Object.entries(exception.keyValue)[0];
-
-        data.errors.push({
-          [path]: {
-            value,
-            message: capitalizeFirstLetter(path) + ' đã tồn tại',
-          },
-        });
+        try {
+          let keyValueString = exception.message.match(/{.+}/g)[0];
+          keyValueString = keyValueString.substring(
+            1,
+            keyValueString.length - 1,
+          );
+          let [key, value] = keyValueString.split(':');
+          value = value.trim();
+          key = key.trim();
+          data.errors.push({
+            [key]: {
+              value: value.substring(1, value.length - 1),
+              message: capitalizeFirstLetter(key) + ' đã tồn tại',
+            },
+          });
+        } catch (e) {
+          data.message = exception.message;
+        }
         break;
       default:
         data.message = exception.message;

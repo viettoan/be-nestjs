@@ -1,9 +1,9 @@
-import { BaseEntity } from 'src/common/enitites/base.entity';
+import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
 import { Entity, Column, Index } from 'typeorm';
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User extends UserAware {
   @Column()
   name: string;
 
