@@ -1,33 +1,53 @@
-import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
-import { Entity, Column, Index } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+import { UserAware } from 'src/common/enitites/user-aware.entity';
 
-@Entity('users')
+export type UserDocument = HydratedDocument<User>;
+
+@Schema({
+  collection: 'users',
+  timestamps: true,
+})
 export class User extends UserAware {
-  @Column()
+  @Prop({
+    type: String,
+    required: true,
+  })
   name: string;
 
-  @Column()
-  @Index({
-    unique: true,
+  @Prop({
+    type: String,
+    required: true,
+    index: true,
   })
   email: string;
 
-  @Column()
-  @Index({
+  @Prop({
+    type: String,
+    required: true,
     unique: true,
   })
   phone: string;
 
-  @Column()
+  @Prop({
+    type: String,
+    required: false,
+  })
   avatar?: string;
 
-  @Column()
+  @Prop({
+    type: String,
+    required: true,
+  })
   password: string;
 
-  @Column({
-    nullable: true,
+  @Prop({
+    type: Number,
     default: UserIsConfirmAccount.FALSE,
+    enum: UserIsConfirmAccount,
   })
   isConfirmAccount?: UserIsConfirmAccount;
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);

@@ -7,7 +7,7 @@ import {
 import { ValidationException } from '../exceptions/validation.exception';
 
 @Catch(ValidationException)
-export class ValidationFilter implements ExceptionFilter {
+export class ValidationExceptionFilter implements ExceptionFilter {
   catch(exception: ValidationException, host: ArgumentsHost): any {
     const context = host.switchToHttp();
     const response = context.getResponse();
@@ -15,6 +15,8 @@ export class ValidationFilter implements ExceptionFilter {
     return response.status(HttpStatus.UNPROCESSABLE_ENTITY).json({
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errors: exception.validationErrors,
+      message: '',
+      now: new Date(),
     });
   }
 }

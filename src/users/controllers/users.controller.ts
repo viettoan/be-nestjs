@@ -17,7 +17,7 @@ import {
   CreateUserMultipartDto,
   UpdateUserMultipartDto,
 } from '../dto/user.dto';
-import { UsersService } from '../services/mongodb/users.service';
+import { UsersService } from '../services/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
@@ -28,18 +28,6 @@ import { USER } from 'src/common/constant/app.constant';
 @ApiTags('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @Get()
-  @HttpCode(200)
-  async index(@Query() query: ListUserWithPaginateDto): Promise<object> {
-    return await this.usersService.listWithPagination(query.limit, query.page);
-  }
-
-  @Get(':userId')
-  @HttpCode(200)
-  async show(@Param('userId') userId: string) {
-    return await this.usersService.show(userId);
-  }
 
   @Post()
   @HttpCode(200)
@@ -66,6 +54,18 @@ export class UsersController {
     @UploadedFile() avatar?: Express.Multer.File,
   ) {
     return await this.usersService.store(user, avatar);
+  }
+
+  @Get()
+  @HttpCode(200)
+  async index(@Query() query: ListUserWithPaginateDto): Promise<object> {
+    return await this.usersService.listWithPagination(query);
+  }
+
+  @Get(':userId')
+  @HttpCode(200)
+  async show(@Param('userId') userId: string) {
+    return await this.usersService.show(userId);
   }
 
   @Put(':userId')

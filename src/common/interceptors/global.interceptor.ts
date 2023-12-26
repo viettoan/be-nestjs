@@ -13,6 +13,7 @@ import { Response } from 'express';
 import { IncomingRequest } from '../types/incoming-request.type';
 import { HttpLoggerContext } from '../utils/http-logger-context.util';
 import { responseSuccess } from '../utils/helpers.util';
+import { MongoException } from '../exceptions/mongo.eception';
 
 config();
 
@@ -48,6 +49,9 @@ export class GlobalInterceptor implements NestInterceptor {
           `Request ${requestId} failed after ${Date.now() - startTime} ms`,
         );
 
+        if (err.name === 'MongoServerError') {
+          throw new MongoException(err.keyValue, err.code, err.message);
+        }
         return throwError(() => err);
       }),
       tap(() => {

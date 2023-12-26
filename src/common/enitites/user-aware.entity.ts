@@ -1,11 +1,17 @@
-import { User } from 'src/users/entities/mongodb/user.entity';
-import { ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { ObjectId } from 'mongodb';
+import { Prop } from '@nestjs/mongoose';
 
 export class UserAware extends BaseEntity {
-  @ManyToOne(() => User)
-  createdBy?: User;
+  @Prop({
+    type: ObjectId,
+    required: false,
+  })
+  createdById?: ObjectId;
 
-  @ManyToOne(() => User)
-  updatedBy?: User;
+  @Prop({
+    type: ObjectId,
+    required: false,
+  })
+  updatedById?: ObjectId;
 }

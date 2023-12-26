@@ -33,9 +33,9 @@ export class Role extends BaseEntity {
   })
   resourceActionPermission: ResourceActionPermission;
 
-  @ManyToMany(() => User)
-  @JoinTable({
-    name: 'role_users',
-  })
-  users: User[];
+  // @ManyToMany(() => User)
+  // @JoinTable({
+  //   name: 'role_users',
+  // })
+  // users: User[];
 }

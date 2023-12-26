@@ -1,22 +1,64 @@
-import { EntityTarget, MongoRepository } from 'typeorm';
-import { DataSource } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { FilterQuery, Model, SortOrder } from 'mongoose';
+import { PAGINATE_OPTIONS } from 'src/common/constant/app.constant';
+import { UserAware } from 'src/common/enitites/user-aware.entity';
+import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mongodb/base.repository.interface';
 
-export class BaseRepository<Entity> extends MongoRepository<Entity> {
-  constructor(
-    entityClass: EntityTarget<Entity>,
-    private dataSource: DataSource,
-  ) {
-    super(
-      entityClass,
-      dataSource.createEntityManager(),
-      dataSource.createQueryRunner(),
-    );
+export abstract class BaseRepository<Entity extends UserAware>
+  implements BaseRepositoryInterface<Entity>
+{
+  constructor(protected model: Model<Entity>) {
+    this.model = model;
   }
+
+  getModel() {
+    return this.model;
+  }
+
+  store(data: Partial<Entity>): Promise<Entity> {
+    return this.getModel().create(data);
+  }
+
+  findBy(
+    conditions: FilterQuery<Entity>,
+    sort: { [key: string]: SortOrder },
+  ): Promise<Entity[]> {
+    return this.getModel()
+      .find({ ...conditions, deleted_at: null })
+      .sort(sort);
+  }
+
+  findOne(conditions: FilterQuery<Entity> = {}): Promise<Entity> {
+    return this.getModel().findOne({ ...conditions, deleted_at: null });
+  }
+
+  findById(_id: string): Promise<Entity> {
+    return this.getModel().findOne({
+      _id,
+      deleted_at: null,
+    });
+  }
+
+  update(_id: string, data: Partial<Entity>): Promise<Entity> {
+    return this.getModel().findByIdAndUpdate(_id, data, {
+      returnDocument: 'after',
+    });
+  }
+
+  async softDelete(_id: string): Promise<boolean> {
+    return !!(await this.getModel().findByIdAndUpdate(_id, {
+      deletedAt: new Date(),
+    }));
+  }
+
+  async delete(_id: string): Promise<boolean> {
+    return !!(await this.model.findByIdAndDelete(_id));
+  }
+
   async paginate(
-    limit: number = 10,
-    page: number = 1,
-    conditions: object = {},
+    conditions: FilterQuery<Entity>,
+    limit: number | string = PAGINATE_OPTIONS.LIMIT,
+    page: number | string = PAGINATE_OPTIONS.PAGE,
+    softDelete: boolean = true,
   ): Promise<{
     data: Entity[];
     total: number;
@@ -24,14 +66,26 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
     page: number;
     totalPage: number;
   }> {
+    limit = +limit || PAGINATE_OPTIONS.LIMIT;
+    page = +page || PAGINATE_OPTIONS.PAGE;
+
+    for (const condition in conditions) {
+      if (typeof conditions[condition] === 'undefined') {
+        delete conditions[condition];
+      }
+    }
+
+    if (softDelete) {
+      conditions.deletedAt = null;
+    }
     const [data, total] = await Promise.all([
-      this.find({
-        where: conditions,
-        skip: limit * (page - 1),
-        take: limit,
-      }),
-      this.count({ ...conditions, deletedAt: null }),
+      this.getModel()
+        .find(conditions)
+        .skip(limit * (page - 1))
+        .limit(limit),
+      this.getModel().countDocuments(conditions),
     ]);
+
     return {
       data,
       total,
@@ -39,74 +93,5 @@ export class BaseRepository<Entity> extends MongoRepository<Entity> {
       page,
       totalPage: Math.ceil(total / limit),
     };
-  }
-
-  findOneById(id: string | number): Promise<Entity | null> {
-    try {
-      return this.findOne({
-        where: {
-          _id: new ObjectId(id),
-        },
-      });
-    } catch (e) {
-      return null;
-    }
-  }
-  async customUpdate(query: object, data: object): Promise<Entity | null> {
-    const updatedEntity = await this.findOneAndUpdate(
-      query,
-      {
-        $set: data,
-      },
-      {
-        returnDocument: 'after',
-      },
-    );
-    if (!updatedEntity.value) {
-      return null;
-    }
-    return updatedEntity.value;
-  }
-  async updateById(id: string, data: Partial<Entity>): Promise<Entity | null> {
-    const entity = await this.findOneById(id);
-
-    if (!entity) {
-      return null;
-    }
-    const entityUpdated = await this.save({ ...entity, ...data });
-
-    return entityUpdated;
-  }
-  async customDelete(
-    query: object,
-    softDelete: boolean = true,
-  ): Promise<boolean> {
-    if (softDelete) {
-      const updatedEntity = await this.findOneAndUpdate(query, {
-        $set: { deletedAt: new Date() },
-      });
-      if (!updatedEntity.value) {
-        return false;
-      }
-      return true;
-    }
-    const deletedEntity = await this.deleteOne(query);
-    return deletedEntity.acknowledged;
-  }
-  async deleteById(id: string, softDelete: boolean = true): Promise<boolean> {
-    const entity = await this.findOneById(id);
-
-    if (!entity) {
-      return false;
-    }
-
-    if (softDelete) {
-      await this.softRemove(entity);
-
-      return true;
-    }
-    await this.remove(entity);
-
-    return true;
   }
 }

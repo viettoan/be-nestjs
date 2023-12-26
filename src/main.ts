@@ -1,25 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationFilter } from './common/filters/validation.filter';
 import { SwaggerModule } from '@nestjs/swagger';
 import { DocumentBuilder } from '@nestjs/swagger/dist';
 import { WinstonLogger } from './common/utils/winston-logger.util';
-import { MongoErrorFilter } from './common/filters/mongo-error.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
+import { ValidationPipe } from './common/pipe/validation.pipe';
+import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 
 async function bootstrap() {
   const logger = new WinstonLogger();
   const app = await NestFactory.create(AppModule, {
     logger,
   });
-  app.useGlobalFilters(new MongoErrorFilter(), new ValidationFilter());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidUnknownValues: false,
-      transform: true,
-    }),
+  app.useGlobalFilters(
+    new ValidationExceptionFilter(),
+    new MongoExceptionFilter(),
   );
+  app.useGlobalPipes(new ValidationPipe());
   const swaggerConfig = new DocumentBuilder()
     .setTitle('BE NestJS')
     .setDescription('BE NestJS - ToanPV')

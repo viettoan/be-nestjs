@@ -1,7 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/mongodb/user.entity';
 import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
 import { ConfigModule } from '@nestjs/config';
@@ -11,6 +9,7 @@ import { GlobalInterceptor } from './common/interceptors/global.interceptor';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RolesModule } from './roles/roles.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -35,20 +34,26 @@ import { RolesModule } from './roles/roles.module';
     //   database: 'vh_exam',
     //   entities: [User],
     // }),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: 'mongodb://127.0.0.1:27017/base?retryWrites=true&w=majority',
-      entities: [User],
-      ssl: false,
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-      synchronize: true,
-      autoLoadEntities: true,
-      name: 'mongodbConnection',
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   url: 'mongodb://127.0.0.1:27017/base?retryWrites=true&w=majority',
+    //   entities: [User, Role],
+    //   ssl: false,
+    //   useUnifiedTopology: true,
+    //   useNewUrlParser: true,
+    //   synchronize: true,
+    //   autoLoadEntities: true,
+    //   name: 'mongodbConnection',
+    // }),
+    MongooseModule.forRoot(
+      'mongodb://127.0.0.1:27017/base?retryWrites=true&w=majority',
+      {
+        autoIndex: true,
+      },
+    ),
     EmailModule,
     UsersModule,
-    RolesModule,
+    // RolesModule,
   ],
   providers: [
     {

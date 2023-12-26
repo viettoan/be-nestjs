@@ -1,21 +1,18 @@
-import {
-  ObjectIdColumn,
-  ObjectId,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from 'typeorm';
+import { Prop } from '@nestjs/mongoose';
 
 export class BaseEntity {
-  @ObjectIdColumn()
-  _id?: ObjectId;
-
-  @CreateDateColumn()
+  @Prop({
+    type: Date,
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Prop({
+    type: Date,
+  })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @Prop({
+    type: Date,
+  })
   deletedAt: Date;
 }
