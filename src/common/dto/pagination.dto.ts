@@ -1,27 +1,32 @@
 import { IsInt, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { toNumber } from '../transforms/toNumber.transform';
-import { ApiProperty, IntersectionType, OmitType, PartialType } from '@nestjs/swagger';
+import { toNumber } from '../transforms/to-number.transform';
+import {
+  ApiProperty,
+  IntersectionType,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 import { Type } from '@nestjs/common';
 
 export class PaginationDto {
   @IsInt()
   @Min(1)
-  @Transform(toNumber)
   @ApiProperty({
     default: 10,
     required: false,
     type: 'number',
   })
+  @Transform(toNumber)
   limit: number = 10;
   @IsInt()
   @Min(1)
-  @Transform(toNumber)
   @ApiProperty({
     default: 1,
     required: false,
     type: 'number',
   })
+  @Transform(toNumber)
   page: number = 1;
 }
 

@@ -1,4 +1,4 @@
-import { FilterQuery, SortOrder } from 'mongoose';
+import { FilterQuery, PopulateOptions, SortOrder } from 'mongoose';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 
 export interface BaseRepositoryInterface<Entity> {
@@ -7,11 +7,12 @@ export interface BaseRepositoryInterface<Entity> {
   findBy(
     conditions: FilterQuery<Entity>,
     sort: { [key: string]: SortOrder },
-  ): Promise<Entity[]>;
+    populate?: PopulateOptions,
+  );
 
-  findOne(conditions: FilterQuery<Entity>): Promise<Entity>;
+  findOne(conditions: FilterQuery<Entity>, populate?: PopulateOptions);
 
-  findById(_id: string): Promise<Entity>;
+  findById(_id: string, populate?: PopulateOptions);
 
   update(_id: string, data: Partial<Entity>): Promise<Entity>;
 
@@ -23,6 +24,6 @@ export interface BaseRepositoryInterface<Entity> {
     conditions: FilterQuery<Entity>,
     limit?: number | string,
     page?: number | string,
-    softDelete?: boolean,
+    populate?: PopulateOptions,
   ): Promise<ResponsePaginationType<Entity>>;
 }

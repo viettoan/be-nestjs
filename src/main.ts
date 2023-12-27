@@ -4,8 +4,9 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { DocumentBuilder } from '@nestjs/swagger/dist';
 import { WinstonLogger } from './common/utils/winston-logger.util';
 import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
-import { ValidationPipe } from './common/pipe/validation.pipe';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
+import { ValidationException } from './common/exceptions/validation.exception';
 
 async function bootstrap() {
   const logger = new WinstonLogger();
@@ -16,7 +17,25 @@ async function bootstrap() {
     new ValidationExceptionFilter(),
     new MongoExceptionFilter(),
   );
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidUnknownValues: false,
+      transform: true,
+      exceptionFactory: (errors) => {
+        return new ValidationException(
+          errors.map((error) => {
+            return {
+              [error.property]: {
+                value: error.value,
+                message: Object.values(error.constraints)[0],
+              },
+            };
+          }),
+        );
+      },
+    }),
+  );
   const swaggerConfig = new DocumentBuilder()
     .setTitle('BE NestJS')
     .setDescription('BE NestJS - ToanPV')

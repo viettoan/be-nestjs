@@ -1,4 +1,4 @@
-import { FilterQuery, Model, SortOrder } from 'mongoose';
+import { FilterQuery, Model, PopulateOptions, SortOrder } from 'mongoose';
 import { PAGINATE_OPTIONS } from 'src/common/constant/app.constant';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mongodb/base.repository.interface';
@@ -22,21 +22,27 @@ export abstract class BaseRepository<Entity extends UserAware>
   findBy(
     conditions: FilterQuery<Entity>,
     sort: { [key: string]: SortOrder },
-  ): Promise<Entity[]> {
+    populate?: PopulateOptions,
+  ) {
     return this.getModel()
       .find({ ...conditions, deleted_at: null })
+      .populate(populate)
       .sort(sort);
   }
 
-  findOne(conditions: FilterQuery<Entity> = {}): Promise<Entity> {
-    return this.getModel().findOne({ ...conditions, deleted_at: null });
+  findOne(conditions: FilterQuery<Entity> = {}, populate?: PopulateOptions) {
+    return this.getModel()
+      .findOne({ ...conditions, deleted_at: null })
+      .populate(populate);
   }
 
-  findById(_id: string): Promise<Entity> {
-    return this.getModel().findOne({
-      _id,
-      deleted_at: null,
-    });
+  findById(_id: string, populate?: PopulateOptions) {
+    return this.getModel()
+      .findOne({
+        _id,
+        deleted_at: null,
+      })
+      .populate(populate);
   }
 
   update(_id: string, data: Partial<Entity>): Promise<Entity> {
@@ -59,7 +65,7 @@ export abstract class BaseRepository<Entity extends UserAware>
     conditions: FilterQuery<Entity>,
     limit: number | string = PAGINATE_OPTIONS.LIMIT,
     page: number | string = PAGINATE_OPTIONS.PAGE,
-    softDelete: boolean = true,
+    populate?: PopulateOptions,
   ): Promise<ResponsePaginationType<Entity>> {
     limit = +limit || PAGINATE_OPTIONS.LIMIT;
     page = +page || PAGINATE_OPTIONS.PAGE;
@@ -70,12 +76,11 @@ export abstract class BaseRepository<Entity extends UserAware>
       }
     }
 
-    if (softDelete) {
-      conditions.deletedAt = null;
-    }
+    conditions.deletedAt = null;
     const [data, total] = await Promise.all([
       this.getModel()
         .find(conditions)
+        .populate(populate)
         .skip(limit * (page - 1))
         .limit(limit),
       this.getModel().countDocuments(conditions),

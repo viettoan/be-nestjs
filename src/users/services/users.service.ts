@@ -2,16 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
-import {
-  CreateUserDto,
-  ListUserWithPaginateDto,
-  UpdateUserDto,
-} from 'src/users/dto/user.dto';
+import { ListUserWithPaginateDto } from 'src/users/dto/user.dto';
 import { USER } from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
 import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +31,7 @@ export class UsersService {
       dataCreate.avatar = `${USER.AVATAR_PREFIX}/${avatar.filename}`;
     }
     const newUser = await this.usersRepository.store(dataCreate);
+
     this.emailService.sendEmailWithTemplate(
       user.email,
       'Welcome to Our Service',
@@ -53,8 +52,8 @@ export class UsersService {
     return this.usersRepository.paginate(rest, limit, page);
   }
 
-  async show(userId: string): Promise<User | null> {
-    const user = await this.usersRepository.findById(userId);
+  async show(userId: string) {
+    const user = await this.usersRepository.findById(userId, { path: 'roles' });
     user.avatar = getUrlFromStorage(
       user.avatar,
       this.configService.get('STORAGE'),

@@ -6,7 +6,6 @@ import { FindRoleQueryDto } from '../dto/find-role-query.dto';
 import { CreateSearchLikeQueryUtil } from 'src/common/utils/create-search-like-query.util';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { UpdateRoleDto } from '../dto/update-role.dto';
-import { User } from 'src/users/entities/mongodb/user.entity';
 
 @Injectable()
 export class RolesService {
@@ -22,8 +21,6 @@ export class RolesService {
   async findWithPaginate(
     query: FindRoleQueryDto,
   ): Promise<ResponsePaginationType<Role>> {
-    console.log(1);
-
     const { limit, page, ...rest } = query;
 
     return this.rolesRepository.paginate(

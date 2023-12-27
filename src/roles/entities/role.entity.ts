@@ -5,6 +5,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 @Schema({
   collection: 'roles',
   timestamps: true,
+  toJSON: {
+    virtuals: true,
+    getters: true,
+  },
 })
 export class Role extends UserAware {
   @Prop({
@@ -34,6 +38,17 @@ export class Role extends UserAware {
     type: Schema,
   })
   resourceActionPermission?: ResourceActionPermission;
+
+  // @Prop({
+  //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: User.name }],
+  // })
+  // @Type(() => User)
+  // users?: User;
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);
+RoleSchema.virtual('users', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'roles',
+});

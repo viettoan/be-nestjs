@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../entities/mongodb/user.entity';
+import { User, UserDocument } from '../entities/mongodb/user.entity';
 import { BaseRepository } from '../../common/repositories/mongodb/base.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -7,12 +7,12 @@ import { UsersRepositoryInterface } from 'src/users/interface/repositories/users
 
 @Injectable()
 export class UsersRepository
-  extends BaseRepository<User>
+  extends BaseRepository<UserDocument>
   implements UsersRepositoryInterface
 {
   constructor(
     @InjectModel(User.name)
-    protected model: Model<User>,
+    protected model: Model<UserDocument>,
   ) {
     super(model);
   }

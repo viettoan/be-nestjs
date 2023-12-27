@@ -1,6 +1,6 @@
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, SchemaTypes } from 'mongoose';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
 
 export type UserDocument = HydratedDocument<User>;
@@ -48,6 +48,14 @@ export class User extends UserAware {
     enum: UserIsConfirmAccount,
   })
   isConfirmAccount?: UserIsConfirmAccount;
+
+  @Prop([
+    {
+      type: SchemaTypes.ObjectId,
+      ref: 'Role',
+    },
+  ])
+  roles: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

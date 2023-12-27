@@ -7,8 +7,8 @@ import {
   IsObject,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { toBoolean } from '../../common/transforms/toBoolean.transform';
-import { toNonEmptyString } from '../../common/transforms/toNonEmptyString.transform';
+import { toBoolean } from '../../common/transforms/to-boolean.transform';
+import { toNonEmptyString } from '../../common/transforms/to-non-empty-string.transform';
 import { ResourceActionPermissionDto } from './resource-action-permission.dto';
 
 export class CreateRoleDto {
