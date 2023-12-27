@@ -11,6 +11,7 @@ import { USER } from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
 import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
+import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 
 @Injectable()
 export class UsersService {
@@ -44,7 +45,9 @@ export class UsersService {
     return newUser;
   }
 
-  async listWithPagination(params: ListUserWithPaginateDto): Promise<object> {
+  async findWithPagination(
+    params: ListUserWithPaginateDto,
+  ): Promise<ResponsePaginationType<User>> {
     const { limit, page, ...rest } = params;
 
     return this.usersRepository.paginate(rest, limit, page);

@@ -1,3 +1,7 @@
+import { ResourceType } from 'src/roles/enums/resource-type.enum';
+import { ResourceAction } from 'src/roles/enums/resource-action.enum';
+import { RoleAvaiablePermissionMap } from '../types/role-avaiable-permission-map';
+
 export const LOG_DATE_FORMAT = 'DD/MM/YYYY HH:mm:ss.SSS';
 
 export const USER = {
@@ -10,4 +14,15 @@ export const PAGINATE_OPTIONS = {
   SORT: {
     CREATED_AT: -1,
   },
+};
+
+export const ROLE_AVAIABLE_PERMISSION_MAP: RoleAvaiablePermissionMap = {
+  [ResourceType.USER]: [
+    ResourceAction.CREATE,
+    ResourceAction.READ,
+    ResourceAction.UPDATE,
+    ResourceAction.DELETE,
+    ResourceAction.EXPORT,
+    ResourceAction.IMPORT,
+  ],
 };

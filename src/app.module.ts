@@ -53,7 +53,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ),
     EmailModule,
     UsersModule,
-    // RolesModule,
+    RolesModule,
   ],
   providers: [
     {

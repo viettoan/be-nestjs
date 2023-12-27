@@ -23,6 +23,8 @@ import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { USER } from 'src/common/constant/app.constant';
+import { User } from '../entities/mongodb/user.entity';
+import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 
 @Controller('users')
 @ApiTags('users')
@@ -52,19 +54,21 @@ export class UsersController {
   async store(
     @Body() user: CreateUserMultipartDto,
     @UploadedFile() avatar?: Express.Multer.File,
-  ) {
+  ): Promise<User> {
     return await this.usersService.store(user, avatar);
   }
 
   @Get()
   @HttpCode(200)
-  async index(@Query() query: ListUserWithPaginateDto): Promise<object> {
-    return await this.usersService.listWithPagination(query);
+  async index(
+    @Query() query: ListUserWithPaginateDto,
+  ): Promise<ResponsePaginationType<User>> {
+    return await this.usersService.findWithPagination(query);
   }
 
   @Get(':userId')
   @HttpCode(200)
-  async show(@Param('userId') userId: string) {
+  async show(@Param('userId') userId: string): Promise<User> {
     return await this.usersService.show(userId);
   }
 
@@ -92,7 +96,7 @@ export class UsersController {
     @Param('userId') userId: string,
     @Body() user: UpdateUserMultipartDto,
     @UploadedFile() avatar?: Express.Multer.File,
-  ) {
+  ): Promise<User> {
     const updatedUser = await this.usersService.update(userId, user, avatar);
 
     if (!updatedUser) {
@@ -104,7 +108,7 @@ export class UsersController {
 
   @Delete(':userId')
   @HttpCode(200)
-  async destroy(@Param('userId') userId: string) {
+  async destroy(@Param('userId') userId: string): Promise<boolean> {
     return await this.usersService.destroy(userId);
   }
 }

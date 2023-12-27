@@ -1,4 +1,5 @@
 import { FilterQuery, SortOrder } from 'mongoose';
+import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 
 export interface BaseRepositoryInterface<Entity> {
   store(data: Partial<Entity>): Promise<Entity>;
@@ -23,11 +24,5 @@ export interface BaseRepositoryInterface<Entity> {
     limit?: number | string,
     page?: number | string,
     softDelete?: boolean,
-  ): Promise<{
-    data: Entity[];
-    total: number;
-    limit: number;
-    page: number;
-    totalPage: number;
-  }>;
+  ): Promise<ResponsePaginationType<Entity>>;
 }

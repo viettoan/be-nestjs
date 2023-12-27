@@ -1,41 +1,39 @@
-import { Column, Entity, Index, JoinTable, ManyToMany } from 'typeorm';
 import { ResourceActionPermission } from '../types/resouce-action-permission.type';
-import { User } from '../../users/entities/mongodb/user.entity';
-import { BaseEntity } from 'src/common/enitites/base.entity';
+import { UserAware } from 'src/common/enitites/user-aware.entity';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity('roles')
-export class Role extends BaseEntity {
-  @Column({
-    nullable: false,
-  })
-  @Index({
+@Schema({
+  collection: 'roles',
+  timestamps: true,
+})
+export class Role extends UserAware {
+  @Prop({
+    required: true,
     unique: true,
   })
   code: string;
 
-  @Column({
-    nullable: false,
+  @Prop({
+    required: true,
   })
   name: string;
 
-  @Column({
-    nullable: true,
+  @Prop({
+    required: false,
   })
   description: string;
 
-  @Column({
+  @Prop({
+    required: true,
     default: true,
   })
   isActive: boolean;
 
-  @Column({
-    nullable: true,
+  @Prop({
+    required: false,
+    type: Schema,
   })
-  resourceActionPermission: ResourceActionPermission;
-
-  // @ManyToMany(() => User)
-  // @JoinTable({
-  //   name: 'role_users',
-  // })
-  // users: User[];
+  resourceActionPermission?: ResourceActionPermission;
 }
+
+export const RoleSchema = SchemaFactory.createForClass(Role);

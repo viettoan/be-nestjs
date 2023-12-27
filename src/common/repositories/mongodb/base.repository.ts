@@ -2,6 +2,7 @@ import { FilterQuery, Model, SortOrder } from 'mongoose';
 import { PAGINATE_OPTIONS } from 'src/common/constant/app.constant';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mongodb/base.repository.interface';
+import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 
 export abstract class BaseRepository<Entity extends UserAware>
   implements BaseRepositoryInterface<Entity>
@@ -59,13 +60,7 @@ export abstract class BaseRepository<Entity extends UserAware>
     limit: number | string = PAGINATE_OPTIONS.LIMIT,
     page: number | string = PAGINATE_OPTIONS.PAGE,
     softDelete: boolean = true,
-  ): Promise<{
-    data: Entity[];
-    total: number;
-    limit: number;
-    page: number;
-    totalPage: number;
-  }> {
+  ): Promise<ResponsePaginationType<Entity>> {
     limit = +limit || PAGINATE_OPTIONS.LIMIT;
     page = +page || PAGINATE_OPTIONS.PAGE;
 
