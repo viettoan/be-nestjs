@@ -2,4 +2,6 @@ import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mong
 import { UserDocument } from 'src/users/entities/mongodb/user.entity';
 
 export interface UsersRepositoryInterface
-  extends BaseRepositoryInterface<UserDocument> {}
+  extends BaseRepositoryInterface<UserDocument> {
+  findOneByEmail(email: string): Promise<UserDocument>;
+}

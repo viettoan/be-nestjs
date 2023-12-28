@@ -7,12 +7,15 @@ import { MongoExceptionFilter } from './common/filters/mongo-exception.filter';
 import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ValidationException } from './common/exceptions/validation.exception';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const logger = new WinstonLogger();
   const app = await NestFactory.create(AppModule, {
     logger,
   });
+  const config = app.get(ConfigService);
+  const port = config.get<number>('PORT') || 3000;
   app.useGlobalFilters(
     new ValidationExceptionFilter(),
     new MongoExceptionFilter(),
@@ -43,7 +46,7 @@ async function bootstrap() {
     .addBearerAuth()
     .addBasicAuth()
     .setExternalDoc('Postman collection', '/docs-json')
-    .addServer(`http://localhost:3000`)
+    .addServer(`http://localhost:${port}`)
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document, {
@@ -51,7 +54,7 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
-  const port = 3000;
+
   await app.listen(port);
   logger.log(`Bootstrap app successfully, server listening on port: ${port}`);
 }

@@ -10,6 +10,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RolesModule } from './roles/roles.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     ),
     EmailModule,
+    AuthModule,
     UsersModule,
     RolesModule,
   ],

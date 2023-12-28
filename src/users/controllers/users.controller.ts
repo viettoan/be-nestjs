@@ -12,14 +12,14 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { ListUserWithPaginateDto } from '../dto/user.dto';
+import { FindUserDto } from '../dto/find-user.dto';
 import { UsersService } from '../services/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { USER } from 'src/common/constant/app.constant';
-import { User, UserDocument } from '../entities/mongodb/user.entity';
+import { User } from '../entities/mongodb/user.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { CreateUserMultipartDto } from '../dto/create-user-multipart.dto';
 import { UpdateUserMultipartDto } from '../dto/update-user-multipart.dto';
@@ -59,7 +59,7 @@ export class UsersController {
   @Get()
   @HttpCode(200)
   async index(
-    @Query() query: ListUserWithPaginateDto,
+    @Query() query: FindUserDto,
   ): Promise<ResponsePaginationType<User>> {
     return await this.usersService.findWithPagination(query);
   }

@@ -19,7 +19,7 @@ export class User extends UserAware {
   @Prop({
     type: String,
     required: true,
-    index: true,
+    unique: true,
   })
   email: string;
 

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
-import { ListUserWithPaginateDto } from 'src/users/dto/user.dto';
+import { FindUserDto } from 'src/users/dto/find-user.dto';
 import { USER } from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
@@ -45,7 +45,7 @@ export class UsersService {
   }
 
   async findWithPagination(
-    params: ListUserWithPaginateDto,
+    params: FindUserDto,
   ): Promise<ResponsePaginationType<User>> {
     const { limit, page, ...rest } = params;
 
