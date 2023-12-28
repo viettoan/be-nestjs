@@ -20,6 +20,8 @@ export interface BaseRepositoryInterface<Entity> {
 
   delete(_id: string): Promise<boolean>;
 
+  deleteByConditions(conditions: FilterQuery<Entity>): Promise<boolean>;
+
   paginate(
     conditions: FilterQuery<Entity>,
     limit?: number | string,

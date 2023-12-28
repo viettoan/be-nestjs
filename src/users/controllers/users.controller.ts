@@ -23,6 +23,9 @@ import { User } from '../entities/mongodb/user.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { CreateUserMultipartDto } from '../dto/create-user-multipart.dto';
 import { UpdateUserMultipartDto } from '../dto/update-user-multipart.dto';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
+import { ResourceType } from 'src/roles/enums/resource-type.enum';
+import { ResourceAction } from 'src/roles/enums/resource-action.enum';
 
 @Controller('users')
 @ApiTags('users')
@@ -31,6 +34,7 @@ export class UsersController {
 
   @Post()
   @HttpCode(200)
+  @RequirePermission(ResourceType.USER, ResourceAction.CREATE)
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -58,6 +62,7 @@ export class UsersController {
 
   @Get()
   @HttpCode(200)
+  @RequirePermission(ResourceType.USER, ResourceAction.READ)
   async index(
     @Query() query: FindUserDto,
   ): Promise<ResponsePaginationType<User>> {
@@ -66,12 +71,14 @@ export class UsersController {
 
   @Get(':userId')
   @HttpCode(200)
+  @RequirePermission(ResourceType.USER, ResourceAction.READ)
   async show(@Param('userId') userId: string) {
     return await this.usersService.show(userId);
   }
 
   @Put(':userId')
   @HttpCode(200)
+  @RequirePermission(ResourceType.USER, ResourceAction.UPDATE)
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -106,6 +113,7 @@ export class UsersController {
 
   @Delete(':userId')
   @HttpCode(200)
+  @RequirePermission(ResourceType.USER, ResourceAction.DELETE)
   async destroy(@Param('userId') userId: string): Promise<boolean> {
     return await this.usersService.destroy(userId);
   }

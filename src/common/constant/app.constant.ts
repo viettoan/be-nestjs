@@ -25,4 +25,10 @@ export const ROLE_AVAIABLE_PERMISSION_MAP: RoleAvaiablePermissionMap = {
     ResourceAction.EXPORT,
     ResourceAction.IMPORT,
   ],
+  [ResourceType.ROLE]: [
+    ResourceAction.CREATE,
+    ResourceAction.READ,
+    ResourceAction.UPDATE,
+    ResourceAction.DELETE,
+  ],
 };

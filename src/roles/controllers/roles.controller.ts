@@ -8,6 +8,9 @@ import { ResponsePaginationType } from 'src/common/types/response-pagination.typ
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { RoleAvaiablePermissionMap } from 'src/common/types/role-avaiable-permission-map';
 import { ROLE_AVAIABLE_PERMISSION_MAP } from 'src/common/constant/app.constant';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
+import { ResourceType } from '../enums/resource-type.enum';
+import { ResourceAction } from '../enums/resource-action.enum';
 
 @Controller('roles')
 @ApiTags('roles')
@@ -15,11 +18,13 @@ export class RolesController {
   constructor(private rolesService: RolesService) {}
 
   @Post()
+  @RequirePermission(ResourceType.ROLE, ResourceAction.CREATE)
   async store(@Body() role: CreateRoleDto): Promise<Role> {
     return await this.rolesService.store(role);
   }
 
   @Get()
+  @RequirePermission(ResourceType.ROLE, ResourceAction.READ)
   async index(
     @Query() query: FindRoleQueryDto,
   ): Promise<ResponsePaginationType<Role>> {
@@ -27,16 +32,19 @@ export class RolesController {
   }
 
   @Get('avaiable-permission')
+  @RequirePermission(ResourceType.ROLE, ResourceAction.READ)
   async getAvaiablePermission(): Promise<RoleAvaiablePermissionMap> {
     return ROLE_AVAIABLE_PERMISSION_MAP;
   }
 
   @Get(':roleId')
+  @RequirePermission(ResourceType.ROLE, ResourceAction.READ)
   async show(@Param('roleId') roleId: string): Promise<Role> {
     return this.rolesService.show(roleId);
   }
 
   @Patch(':roleId')
+  @RequirePermission(ResourceType.ROLE, ResourceAction.UPDATE)
   async update(
     @Param('roleId') roleId: string,
     @Body() role: UpdateRoleDto,
@@ -45,6 +53,7 @@ export class RolesController {
   }
 
   @Delete(':roleId')
+  @RequirePermission(ResourceType.ROLE, ResourceAction.DELETE)
   async destroy(@Param('roleId') roleId: string): Promise<boolean> {
     return this.rolesService.destroy(roleId);
   }

@@ -61,6 +61,10 @@ export abstract class BaseRepository<Entity extends UserAware>
     return !!(await this.model.findByIdAndDelete(_id));
   }
 
+  async deleteByConditions(conditions: FilterQuery<Entity>): Promise<boolean> {
+    return !!(await this.getModel().findOneAndDelete(conditions));
+  }
+
   async paginate(
     conditions: FilterQuery<Entity>,
     limit: number | string = PAGINATE_OPTIONS.LIMIT,

@@ -8,6 +8,8 @@ import { randomBytes } from 'crypto';
 import { Session, SessionDocument } from '../entities/session.entity';
 import { SessionsRepositoryInterface } from '../interfaces/repositories/session.repository.interface';
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
+import { ChangePasswordDto } from '../dto/change-password.dto';
+import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +41,35 @@ export class AuthService {
       ...user.toObject(),
       token,
     };
+  }
+
+  async findSession(token: string) {
+    return this.sessionsRepository.findOne({
+        token,
+      },
+      {
+        path: 'user',
+        populate: 'roles',
+      },
+    );
+  }
+
+  async changePassword(user: User, data: ChangePasswordDto) {
+    if (!(await this.compareBcryptPassword(data.oldPassword, user.password))) {
+      throw new BadRequestException('Password khong chinh xac');
+    }
+
+    const userUpdated = await this.usersRepository.update(user._id, {
+      password: await createBcryptHashPassword(data.newPassword),
+    });
+
+    return !!userUpdated;
+  }
+
+  async logout(user: User) {
+    await this.sessionsRepository.deleteByConditions({
+      user: user._id,
+    });
   }
 
   private async compareBcryptPassword(
