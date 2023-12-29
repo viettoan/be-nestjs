@@ -11,6 +11,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { FindUserDto } from '../dto/find-user.dto';
 import { UsersService } from '../services/users.service';
@@ -18,7 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { USER } from 'src/common/constant/app.constant';
+import { EXCEL_MIME_TYPE, USER } from 'src/common/constant/app.constant';
 import { User } from '../entities/mongodb/user.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { CreateUserMultipartDto } from '../dto/create-user-multipart.dto';
@@ -26,6 +27,9 @@ import { UpdateUserMultipartDto } from '../dto/update-user-multipart.dto';
 import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 import { ResourceType } from 'src/roles/enums/resource-type.enum';
 import { ResourceAction } from 'src/roles/enums/resource-action.enum';
+import { ExportUserDto } from '../dto/export-user.dto';
+import { Response } from 'express';
+import { Readable } from 'stream';
 
 @Controller('users')
 @ApiTags('users')
@@ -67,6 +71,15 @@ export class UsersController {
     @Query() query: FindUserDto,
   ): Promise<ResponsePaginationType<User>> {
     return await this.usersService.findWithPagination(query);
+  }
+
+  @Get('export')
+  @RequirePermission(ResourceType.USER, ResourceAction.EXPORT)
+  async export(@Query() query: ExportUserDto, @Res() res: Response) {
+    const { buffer, fileName } = await this.usersService.export(query);
+    res.setHeader('Content-Type', EXCEL_MIME_TYPE);
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    Readable.from(buffer).pipe(res);
   }
 
   @Get(':userId')

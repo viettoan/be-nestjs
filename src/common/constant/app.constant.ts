@@ -32,3 +32,8 @@ export const ROLE_AVAIABLE_PERMISSION_MAP: RoleAvaiablePermissionMap = {
     ResourceAction.DELETE,
   ],
 };
+
+export const QUERY_BATCHING_SIZE = 500;
+
+export const EXCEL_MIME_TYPE =
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';

@@ -28,4 +28,12 @@ export interface BaseRepositoryInterface<Entity> {
     page?: number | string,
     populate?: PopulateOptions,
   ): Promise<ResponsePaginationType<Entity>>;
+
+  count(conditions: FilterQuery<Entity>): Promise<number>;
+
+  findWithBatch(
+    conditions: FilterQuery<Entity>,
+    batchingSize: number,
+    populate?: PopulateOptions,
+  );
 }

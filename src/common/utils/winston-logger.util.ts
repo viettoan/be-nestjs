@@ -1,18 +1,18 @@
 import { ConsoleLogger } from '@nestjs/common';
 import { config } from 'dotenv';
-import dayjs from 'dayjs';
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { Logger as TypeormLogger } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { HttpLoggerContext } from './http-logger-context.util';
 import { LOG_DATE_FORMAT } from '../constant/app.constant';
+import moment from 'moment';
 
 config();
 
 const timestampWithTimezone = winston.format((info) => {
   return {
-    time: dayjs().format(LOG_DATE_FORMAT),
+    time: moment().format(LOG_DATE_FORMAT),
     ...info,
   };
 });

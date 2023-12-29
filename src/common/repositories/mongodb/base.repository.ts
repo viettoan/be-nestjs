@@ -79,7 +79,6 @@ export abstract class BaseRepository<Entity extends UserAware>
         delete conditions[condition];
       }
     }
-
     conditions.deletedAt = null;
     const [data, total] = await Promise.all([
       this.getModel()
@@ -97,5 +96,37 @@ export abstract class BaseRepository<Entity extends UserAware>
       page,
       totalPage: Math.ceil(total / limit),
     };
+  }
+
+  async count(conditions: FilterQuery<Entity>): Promise<number> {
+    return this.getModel().countDocuments(conditions) || 0;
+  }
+
+  async findWithBatch(
+    conditions: FilterQuery<Entity>,
+    batchingSize: number,
+    populate?: PopulateOptions,
+  ) {
+    for (const condition in conditions) {
+      if (typeof conditions[condition] === 'undefined') {
+        delete conditions[condition];
+      }
+    }
+    conditions.deletedAt = null;
+    const count = await this.count(conditions);
+    const promises = [];
+
+    for (let index = 0; index < count; index += batchingSize) {
+      promises.push(
+        this.getModel()
+          .find(conditions)
+          .populate(populate)
+          .skip(index)
+          .limit(batchingSize),
+      );
+    }
+    const data = await Promise.all(promises);
+
+    return data;
   }
 }
