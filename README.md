@@ -51,6 +51,11 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+## Initial Root User
+
+```bash
+$ npx nestjs-command create:root-user
+```
 
 ## Test
 

@@ -3,6 +3,7 @@ import { ResourceAction } from 'src/roles/enums/resource-action.enum';
 import { ResourceType } from 'src/roles/enums/resource-type.enum';
 import { User } from '../entities/mongodb/user.entity';
 import { UserIsConfirmAccount } from '../enum/user-is-confirm-account.enum';
+import { ConfigService } from '@nestjs/config';
 
 export function checkUserHasPermission(
   resourceType: ResourceType,
@@ -12,6 +13,13 @@ export function checkUserHasPermission(
 ) {
   if (!user) {
     return false;
+  }
+  const configService = new ConfigService();
+
+  if (
+    user.email === configService.getOrThrow<string>('ROOT_USER_INITIAL_EMAIL')
+  ) {
+    return true;
   }
 
   if (

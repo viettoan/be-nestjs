@@ -15,19 +15,18 @@ export class ResourcePermissionGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext) {
-    console.log(1);
-
     const user = context.switchToHttp().getRequest().user as User;
-
     const allowed = checkUserHasPermission(
       this.resource,
       this.action,
       this.permissionValues,
       user,
     );
+
     if (!allowed) {
       throw new ForbiddenException('User khong co quyen thuc hien tac vu nay');
     }
+
     return true;
   }
 }

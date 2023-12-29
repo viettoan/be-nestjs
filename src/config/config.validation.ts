@@ -13,4 +13,13 @@ export const validationSchema = Joi.object({
   BCRYPT_SALT_ROUND: Joi.number().default(10),
   SESSION_KEY_LENGTH_IN_BYTES: Joi.number().required(),
   SESSION_EXPIRE_DURATION_IN_SECOND: Joi.number().required(),
+
+  ROOT_USER_INITIAL_NAME: Joi.string().min(1).max(255).required(),
+  ROOT_USER_INITIAL_PASSWORD: Joi.string().min(6).max(25).required(),
+  ROOT_USER_INITIAL_EMAIL: Joi.string().email().min(1).max(255).required(),
+  ROOT_USER_INITIAL_PHONE: Joi.string()
+    .regex(
+      /^(0|\+84)((3[2-9])|(4[0-9])|(5[25689])|(7[06-9])|(8[1-9])|(9[0-46-9]))(\d)(\d{3})(\d{3})$/u,
+    )
+    .required(),
 });
