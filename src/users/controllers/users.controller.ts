@@ -30,6 +30,8 @@ import { ResourceAction } from 'src/roles/enums/resource-action.enum';
 import { ExportUserDto } from '../dto/export-user.dto';
 import { Response } from 'express';
 import { Readable } from 'stream';
+import { getExcelFileFilter } from 'src/common/utils/file-filter';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('users')
 @ApiTags('users')
@@ -129,5 +131,32 @@ export class UsersController {
   @RequirePermission(ResourceType.USER, ResourceAction.DELETE)
   async destroy(@Param('userId') userId: string): Promise<boolean> {
     return await this.usersService.destroy(userId);
+  }
+
+  @Post('import')
+  @RequirePermission(ResourceType.USER, ResourceAction.IMPORT)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: getExcelFileFilter(),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+      required: ['file'],
+    },
+  })
+  async import(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User,
+  ) {
+    return this.usersService.import(file, user);
   }
 }

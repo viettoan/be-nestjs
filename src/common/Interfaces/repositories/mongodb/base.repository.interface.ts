@@ -4,6 +4,8 @@ import { ResponsePaginationType } from 'src/common/types/response-pagination.typ
 export interface BaseRepositoryInterface<Entity> {
   store(data: Partial<Entity>): Promise<Entity>;
 
+  storeMany(data: Partial<Entity>[]): Promise<boolean>;
+
   findBy(
     conditions: FilterQuery<Entity>,
     sort: { [key: string]: SortOrder },

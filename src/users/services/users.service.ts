@@ -3,7 +3,7 @@ import { User } from '../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
 import { FindUserDto } from 'src/users/dto/find-user.dto';
-import { QUERY_BATCHING_SIZE, USER } from 'src/common/constant/app.constant';
+import { QUERY_BATCHING_SIZE, USER, USER_IMPORT_HEADER_PREFIXES } from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
 import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
@@ -14,8 +14,11 @@ import { ExportUserDto } from '../dto/export-user.dto';
 import XlsxTemplate from 'xlsx-template';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { UsersExportType } from '../types/UsersExport.type';
+import { UsersExportType } from '../types/user-export.type';
 import moment from 'moment';
+import * as Excel from '../../common/utils/excel';
+import { UserImportRowEntry } from '../types/user-import-row-entry.type';
+import { UserIsConfirmAccount } from '../enum/user-is-confirm-account.enum';
 
 @Injectable()
 export class UsersService {
@@ -122,5 +125,29 @@ export class UsersService {
       buffer: fileExport.generate({ type: 'nodebuffer' }) as Buffer,
       fileName: `DanhsachUsers_${current}.xlsx`,
     };
+  }
+
+  async import(file: Express.Multer.File, user?: User) {
+    const { buffer } = file;
+    const workbook = Excel.readData(buffer, {
+      type: 'buffer',
+    });
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    Excel.verifyHeader(worksheet, USER_IMPORT_HEADER_PREFIXES);
+    const dataRaw = Excel.convertToJson<UserImportRowEntry>(worksheet, {
+      range: 1,
+      header: ['STT', 'name', 'email', 'phone'],
+      blankrows: false,
+      defval: '',
+    });
+    const dataUsers = await Promise.all(
+      dataRaw.map(async (user) => ({
+        ...user,
+        password: await createBcryptHashPassword(USER.DEFAULT_PASSWORD),
+        isConfirmAccount: UserIsConfirmAccount.FALSE,
+      })),
+    );
+
+    return this.usersRepository.storeMany(dataUsers);
   }
 }

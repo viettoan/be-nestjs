@@ -6,6 +6,7 @@ export const LOG_DATE_FORMAT = 'DD/MM/YYYY HH:mm:ss.SSS';
 
 export const USER = {
   AVATAR_PREFIX: '/avatar',
+  DEFAULT_PASSWORD: '12345678',
 };
 
 export const PAGINATE_OPTIONS = {
@@ -37,3 +38,5 @@ export const QUERY_BATCHING_SIZE = 500;
 
 export const EXCEL_MIME_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+export const USER_IMPORT_HEADER_PREFIXES = ['STT', 'Name', 'Email', 'Phone'];

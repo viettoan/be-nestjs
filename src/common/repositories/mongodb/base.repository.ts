@@ -129,4 +129,8 @@ export abstract class BaseRepository<Entity extends UserAware>
 
     return data;
   }
+
+  async storeMany(data: Partial<Entity>[]): Promise<boolean> {
+    return !!(await this.getModel().create(data));
+  }
 }
