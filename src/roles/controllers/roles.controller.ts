@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RolesService } from '../services/roles.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
@@ -11,6 +20,8 @@ import { ROLE_AVAIABLE_PERMISSION_MAP } from 'src/common/constant/app.constant';
 import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 import { ResourceType } from '../enums/resource-type.enum';
 import { ResourceAction } from '../enums/resource-action.enum';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { User } from 'src/users/entities/mongodb/user.entity';
 
 @Controller('roles')
 @ApiTags('roles')
@@ -19,8 +30,11 @@ export class RolesController {
 
   @Post()
   @RequirePermission(ResourceType.ROLE, ResourceAction.CREATE)
-  async store(@Body() role: CreateRoleDto): Promise<Role> {
-    return await this.rolesService.store(role);
+  async store(
+    @Body() role: CreateRoleDto,
+    @CurrentUser() currentUser: User,
+  ): Promise<Role> {
+    return await this.rolesService.store(role, currentUser);
   }
 
   @Get()
@@ -48,8 +62,9 @@ export class RolesController {
   async update(
     @Param('roleId') roleId: string,
     @Body() role: UpdateRoleDto,
+    @CurrentUser() currentUser: User,
   ): Promise<Role> {
-    return this.rolesService.update(roleId, role);
+    return this.rolesService.update(roleId, role, currentUser);
   }
 
   @Delete(':roleId')

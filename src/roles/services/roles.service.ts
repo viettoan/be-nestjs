@@ -6,6 +6,7 @@ import { FindRoleQueryDto } from '../dto/find-role-query.dto';
 import { CreateSearchLikeQueryUtil } from 'src/common/utils/create-search-like-query.util';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { UpdateRoleDto } from '../dto/update-role.dto';
+import { User } from 'src/users/entities/mongodb/user.entity';
 
 @Injectable()
 export class RolesService {
@@ -14,8 +15,8 @@ export class RolesService {
     private rolesRepository: RolesRepository,
   ) {}
 
-  async store(role: CreateRoleDto): Promise<Role> {
-    return await this.rolesRepository.store(role);
+  async store(role: CreateRoleDto, currentUser?: User): Promise<Role> {
+    return await this.rolesRepository.store(role, currentUser);
   }
 
   async findWithPaginate(
@@ -38,8 +39,12 @@ export class RolesService {
     return this.rolesRepository.findById(roleId);
   }
 
-  async update(roleId: string, role: UpdateRoleDto): Promise<Role> {
-    return this.rolesRepository.update(roleId, role);
+  async update(
+    roleId: string,
+    role: UpdateRoleDto,
+    currentUser?: User,
+  ): Promise<Role> {
+    return this.rolesRepository.update(roleId, role, currentUser);
   }
 
   async destroy(roleId: string): Promise<boolean> {

@@ -3,7 +3,11 @@ import { User } from '../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
 import { FindUserDto } from 'src/users/dto/find-user.dto';
-import { QUERY_BATCHING_SIZE, USER, USER_IMPORT_HEADER_PREFIXES } from 'src/common/constant/app.constant';
+import {
+  QUERY_BATCHING_SIZE,
+  USER,
+  USER_IMPORT_HEADER_PREFIXES,
+} from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
 import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
@@ -32,6 +36,7 @@ export class UsersService {
   async store(
     user: CreateUserDto,
     avatar?: Express.Multer.File,
+    currentUser?: User,
   ): Promise<User> {
     const dataCreate: Partial<User> = { ...user };
     dataCreate.password = await createBcryptHashPassword(user.password);
@@ -39,7 +44,7 @@ export class UsersService {
     if (avatar) {
       dataCreate.avatar = `${USER.AVATAR_PREFIX}/${avatar.filename}`;
     }
-    const newUser = await this.usersRepository.store(dataCreate);
+    const newUser = await this.usersRepository.store(dataCreate, currentUser);
 
     this.emailService.sendEmailWithTemplate(
       user.email,
@@ -75,6 +80,7 @@ export class UsersService {
     userId: string,
     user: UpdateUserDto,
     avatar?: Express.Multer.File,
+    currentUser?: User,
   ): Promise<User> {
     const dataUpdate: Partial<User> = { ...user };
 
@@ -85,11 +91,11 @@ export class UsersService {
     if (user.password) {
       user.password = await createBcryptHashPassword(user.password);
     }
-    return this.usersRepository.update(userId, dataUpdate);
+    return this.usersRepository.update(userId, dataUpdate, currentUser);
   }
 
-  async destroy(userId: string): Promise<boolean> {
-    return await this.usersRepository.softDelete(userId);
+  async destroy(userId: string, currentUser?: User): Promise<boolean> {
+    return await this.usersRepository.softDelete(userId, currentUser);
   }
 
   async export(query: ExportUserDto) {
@@ -127,7 +133,7 @@ export class UsersService {
     };
   }
 
-  async import(file: Express.Multer.File, user?: User) {
+  async import(file: Express.Multer.File, currentUser?: User) {
     const { buffer } = file;
     const workbook = Excel.readData(buffer, {
       type: 'buffer',
@@ -148,6 +154,6 @@ export class UsersService {
       })),
     );
 
-    return this.usersRepository.storeMany(dataUsers);
+    return this.usersRepository.storeMany(dataUsers, currentUser);
   }
 }

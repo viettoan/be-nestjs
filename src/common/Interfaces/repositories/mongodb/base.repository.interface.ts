@@ -1,10 +1,11 @@
 import { FilterQuery, PopulateOptions, SortOrder } from 'mongoose';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
+import { User } from 'src/users/entities/mongodb/user.entity';
 
 export interface BaseRepositoryInterface<Entity> {
-  store(data: Partial<Entity>): Promise<Entity>;
+  store(data: Partial<Entity>, user?: User): Promise<Entity>;
 
-  storeMany(data: Partial<Entity>[]): Promise<boolean>;
+  storeMany(data: Partial<Entity>[], user?: User): Promise<boolean>;
 
   findBy(
     conditions: FilterQuery<Entity>,
@@ -16,9 +17,9 @@ export interface BaseRepositoryInterface<Entity> {
 
   findById(_id: string, populate?: PopulateOptions);
 
-  update(_id: string, data: Partial<Entity>): Promise<Entity>;
+  update(_id: string, data: Partial<Entity>, user?: User): Promise<Entity>;
 
-  softDelete(_id: string): Promise<boolean>;
+  softDelete(_id: string, user?: User): Promise<boolean>;
 
   delete(_id: string): Promise<boolean>;
 

@@ -3,6 +3,7 @@ import { PAGINATE_OPTIONS } from 'src/common/constant/app.constant';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mongodb/base.repository.interface';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
+import { User } from 'src/users/entities/mongodb/user.entity';
 
 export abstract class BaseRepository<Entity extends UserAware>
   implements BaseRepositoryInterface<Entity>
@@ -15,8 +16,12 @@ export abstract class BaseRepository<Entity extends UserAware>
     return this.model;
   }
 
-  store(data: Partial<Entity>): Promise<Entity> {
-    return this.getModel().create(data);
+  store(data: Partial<Entity>, currentUser?: User): Promise<Entity> {
+    return this.getModel().create({
+      ...data,
+      createdById: currentUser?._id,
+      updatedById: currentUser?._id,
+    });
   }
 
   findBy(
@@ -45,15 +50,27 @@ export abstract class BaseRepository<Entity extends UserAware>
       .populate(populate);
   }
 
-  update(_id: string, data: Partial<Entity>): Promise<Entity> {
-    return this.getModel().findByIdAndUpdate(_id, data, {
-      returnDocument: 'after',
-    });
+  update(
+    _id: string,
+    data: Partial<Entity>,
+    currentUser?: User,
+  ): Promise<Entity> {
+    return this.getModel().findByIdAndUpdate(
+      _id,
+      {
+        ...data,
+        updatedById: currentUser?._id,
+      },
+      {
+        returnDocument: 'after',
+      },
+    );
   }
 
-  async softDelete(_id: string): Promise<boolean> {
+  async softDelete(_id: string, currentUser?: User): Promise<boolean> {
     return !!(await this.getModel().findByIdAndUpdate(_id, {
       deletedAt: new Date(),
+      updatedById: currentUser?._id,
     }));
   }
 
@@ -130,7 +147,18 @@ export abstract class BaseRepository<Entity extends UserAware>
     return data;
   }
 
-  async storeMany(data: Partial<Entity>[]): Promise<boolean> {
+  async storeMany(
+    data: Partial<Entity>[],
+    currentUser?: User,
+  ): Promise<boolean> {
+    if (currentUser) {
+      data = data.map((item) => ({
+        ...item,
+        createdById: currentUser?._id,
+        updatedById: currentUser?._id,
+      }));
+    }
+
     return !!(await this.getModel().create(data));
   }
 }

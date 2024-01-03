@@ -61,9 +61,10 @@ export class UsersController {
   })
   async store(
     @Body() user: CreateUserMultipartDto,
+    @CurrentUser() currentUser: User,
     @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<User> {
-    return await this.usersService.store(user, avatar);
+    return await this.usersService.store(user, avatar, currentUser);
   }
 
   @Get()
@@ -115,9 +116,15 @@ export class UsersController {
   async update(
     @Param('userId') userId: string,
     @Body() user: UpdateUserMultipartDto,
+    @CurrentUser() currentUser: User,
     @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<User> {
-    const updatedUser = await this.usersService.update(userId, user, avatar);
+    const updatedUser = await this.usersService.update(
+      userId,
+      user,
+      avatar,
+      currentUser,
+    );
 
     if (!updatedUser) {
       throw new NotFoundException('User not found');
@@ -129,8 +136,11 @@ export class UsersController {
   @Delete(':userId')
   @HttpCode(200)
   @RequirePermission(ResourceType.USER, ResourceAction.DELETE)
-  async destroy(@Param('userId') userId: string): Promise<boolean> {
-    return await this.usersService.destroy(userId);
+  async destroy(
+    @Param('userId') userId: string,
+    @CurrentUser() currentUser: User,
+  ): Promise<boolean> {
+    return await this.usersService.destroy(userId, currentUser);
   }
 
   @Post('import')
@@ -155,8 +165,8 @@ export class UsersController {
   })
   async import(
     @UploadedFile() file: Express.Multer.File,
-    @CurrentUser() user: User,
+    @CurrentUser() currentUser: User,
   ) {
-    return this.usersService.import(file, user);
+    return this.usersService.import(file, currentUser);
   }
 }
