@@ -65,7 +65,6 @@ import { KafkaModule } from './kafka/kafka.module';
           password: configService.get<string>('KAFKA_PASSWORD'),
         };
       },
-      imports: [ConfigModule],
       inject: [ConfigService],
     }),
     RedisModule,
