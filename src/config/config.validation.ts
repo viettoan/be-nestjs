@@ -25,4 +25,10 @@ export const validationSchema = Joi.object({
 
   REDIS_HOST: Joi.string().default('localhost'),
   REDIS_PORT: Joi.number().default(6379),
+
+  KAFKA_BROKERS: Joi.string().required(),
+  KAFKA_CLIENT_ID: Joi.string().required(),
+  KAFKA_CONSUMER_GROUP_ID: Joi.string().required(),
+  KAFKA_USERNAME: Joi.string().allow(''),
+  KAFKA_PASSWORD: Joi.string().allow(''),
 });

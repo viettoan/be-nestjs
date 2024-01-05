@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validationSchema } from './config/config.validation';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalInterceptor } from './common/interceptors/global.interceptor';
@@ -12,6 +12,7 @@ import { RolesModule } from './roles/roles.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -53,6 +54,20 @@ import { RedisModule } from './redis/redis.module';
         autoIndex: true,
       },
     ),
+    KafkaModule.registerAsync({
+      isGlobal: true,
+      useFactory: (configService: ConfigService) => {
+        return {
+          brokers: configService.getOrThrow<string>('KAFKA_BROKERS').split(','),
+          clientId: configService.getOrThrow<string>('KAFKA_CLIENT_ID'),
+          groupId: configService.getOrThrow<string>('KAFKA_CONSUMER_GROUP_ID'),
+          username: configService.get<string>('KAFKA_USERNAME'),
+          password: configService.get<string>('KAFKA_PASSWORD'),
+        };
+      },
+      imports: [ConfigModule],
+      inject: [ConfigService],
+    }),
     RedisModule,
     EmailModule,
     AuthModule,

@@ -2,7 +2,7 @@ import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Redis } from 'ioredis';
 
-const configService = new ConfigService()
+const configService = new ConfigService();
 export type RedisClient = Redis;
 
 export const redisProvider: Provider = {
