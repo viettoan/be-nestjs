@@ -11,6 +11,7 @@ import { join } from 'path';
 import { RolesModule } from './roles/roles.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { AuthModule } from './auth/auth.module';
         autoIndex: true,
       },
     ),
+    RedisModule,
     EmailModule,
     AuthModule,
     UsersModule,

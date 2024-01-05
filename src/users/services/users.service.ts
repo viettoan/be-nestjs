@@ -23,6 +23,7 @@ import moment from 'moment';
 import * as Excel from '../../common/utils/excel';
 import { UserImportRowEntry } from '../types/user-import-row-entry.type';
 import { UserIsConfirmAccount } from '../enum/user-is-confirm-account.enum';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +32,7 @@ export class UsersService {
     private configService: ConfigService,
     @Inject('UsersRepositoryInterface')
     private usersRepository: UsersRepositoryInterface,
+    private redisService: RedisService,
   ) {}
 
   async store(
