@@ -23,7 +23,7 @@ import moment from 'moment';
 import * as Excel from '../../common/utils/excel';
 import { UserImportRowEntry } from '../types/user-import-row-entry.type';
 import { UserIsConfirmAccount } from '../enum/user-is-confirm-account.enum';
-import { RedisService } from 'src/redis/redis.service';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UsersService {
@@ -32,7 +32,6 @@ export class UsersService {
     private configService: ConfigService,
     @Inject('UsersRepositoryInterface')
     private usersRepository: UsersRepositoryInterface,
-    private redisService: RedisService,
   ) {}
 
   async store(
@@ -157,5 +156,10 @@ export class UsersService {
     );
 
     return this.usersRepository.storeMany(dataUsers, currentUser);
+  }
+
+  @Cron('0 * * * * *')
+  testCron() {
+    console.log('Test cron job');
   }
 }

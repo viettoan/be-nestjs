@@ -13,9 +13,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { KafkaModule } from './kafka/kafka.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'storage'),
     }),
@@ -54,20 +56,20 @@ import { KafkaModule } from './kafka/kafka.module';
         autoIndex: true,
       },
     ),
-    KafkaModule.registerAsync({
-      isGlobal: true,
-      useFactory: (configService: ConfigService) => {
-        return {
-          brokers: configService.getOrThrow<string>('KAFKA_BROKERS').split(','),
-          clientId: configService.getOrThrow<string>('KAFKA_CLIENT_ID'),
-          groupId: configService.getOrThrow<string>('KAFKA_CONSUMER_GROUP_ID'),
-          username: configService.get<string>('KAFKA_USERNAME'),
-          password: configService.get<string>('KAFKA_PASSWORD'),
-        };
-      },
-      inject: [ConfigService],
-    }),
-    RedisModule,
+    // KafkaModule.registerAsync({
+    //   isGlobal: true,
+    //   useFactory: (configService: ConfigService) => {
+    //     return {
+    //       brokers: configService.getOrThrow<string>('KAFKA_BROKERS').split(','),
+    //       clientId: configService.getOrThrow<string>('KAFKA_CLIENT_ID'),
+    //       groupId: configService.getOrThrow<string>('KAFKA_CONSUMER_GROUP_ID'),
+    //       username: configService.get<string>('KAFKA_USERNAME'),
+    //       password: configService.get<string>('KAFKA_PASSWORD'),
+    //     };
+    //   },
+    //   inject: [ConfigService],
+    // }),
+    // RedisModule,
     EmailModule,
     AuthModule,
     UsersModule,
