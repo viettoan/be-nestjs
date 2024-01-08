@@ -31,4 +31,6 @@ export const validationSchema = Joi.object({
   KAFKA_CONSUMER_GROUP_ID: Joi.string().required(),
   KAFKA_USERNAME: Joi.string().allow(''),
   KAFKA_PASSWORD: Joi.string().allow(''),
+
+  MONGO_URI: Joi.string().required(),
 });

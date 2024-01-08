@@ -7,4 +7,4 @@ export const createUserSchema = Joi.object({
   address: Joi.string().required(),
 }).options({ abortEarly: false, allowUnknown: true });
 
-export class FindUserDto extends PaginationDto {}
+export class GetUsersWithPaginateDto extends PaginationDto {}

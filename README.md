@@ -36,6 +36,8 @@ Project base using NestJS
 - [X] Integrate Kafka
 - [ ] Integrate GraphQL
 - [ ] Integrate realtime communication
+- [X] Integrate Task Schedule
+- [ ] Integrate CQRS Pattern
 
 ## Installation
 

@@ -7,10 +7,14 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './controllers/auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { BearerStrategy } from './strategies/bearer.startegy';
+import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    MongooseModule.forFeature(
+      [{ name: Session.name, schema: SessionSchema }],
+      MONGO_CONNECTION_NAME,
+    ),
     PassportModule,
     UsersModule,
   ],

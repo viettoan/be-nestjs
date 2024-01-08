@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MONGO_CONNECTION_NAME } from './common/constant/database.constant';
 
 @Module({
   imports: [
@@ -50,12 +51,13 @@ import { ScheduleModule } from '@nestjs/schedule';
     //   autoLoadEntities: true,
     //   name: 'mongodbConnection',
     // }),
-    MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/base?retryWrites=true&w=majority',
-      {
-        autoIndex: true,
-      },
-    ),
+    MongooseModule.forRootAsync({
+      connectionName: MONGO_CONNECTION_NAME,
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
     // KafkaModule.registerAsync({
     //   isGlobal: true,
     //   useFactory: (configService: ConfigService) => {

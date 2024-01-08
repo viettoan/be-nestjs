@@ -4,6 +4,7 @@ import { BaseRepository } from '../../common/repositories/mongodb/base.repositor
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model, Types } from 'mongoose';
 import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
+import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
 
 @Injectable()
 export class UsersRepository
@@ -11,7 +12,7 @@ export class UsersRepository
   implements UsersRepositoryInterface
 {
   constructor(
-    @InjectModel(User.name)
+    @InjectModel(User.name, MONGO_CONNECTION_NAME)
     protected model: Model<UserDocument>,
   ) {
     super(model);

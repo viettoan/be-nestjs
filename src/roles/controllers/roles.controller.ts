@@ -9,9 +9,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RolesService } from '../services/roles.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
-import { FindRoleQueryDto } from '../dto/find-role-query.dto';
+import { GetRolesWithPaginateDto } from '../dto/get-roles-with-paginate.dto';
 import { Role } from '../entities/role.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { UpdateRoleDto } from '../dto/update-role.dto';
@@ -22,11 +21,20 @@ import { ResourceType } from '../enums/resource-type.enum';
 import { ResourceAction } from '../enums/resource-action.enum';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/users/entities/mongodb/user.entity';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { FindRoleQuery } from '../queries/impl/find-role.query';
+import { GetRolesWithPaginateQuery } from '../queries/impl/get-roles-with-paginate.query';
+import { StoreRoleCommand } from '../commands/impl/store-role.command';
+import { UpdateRoleCommand } from '../commands/impl/update-role.command';
+import { DeleteRoleCommand } from '../commands/impl/delete-role.command';
 
 @Controller('roles')
 @ApiTags('roles')
 export class RolesController {
-  constructor(private rolesService: RolesService) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
 
   @Post()
   @RequirePermission(ResourceType.ROLE, ResourceAction.CREATE)
@@ -34,15 +42,17 @@ export class RolesController {
     @Body() role: CreateRoleDto,
     @CurrentUser() currentUser: User,
   ): Promise<Role> {
-    return await this.rolesService.store(role, currentUser);
+    return await this.commandBus.execute(
+      new StoreRoleCommand(role, currentUser),
+    );
   }
 
   @Get()
   @RequirePermission(ResourceType.ROLE, ResourceAction.READ)
   async index(
-    @Query() query: FindRoleQueryDto,
+    @Query() query: GetRolesWithPaginateDto,
   ): Promise<ResponsePaginationType<Role>> {
-    return await this.rolesService.findWithPaginate(query);
+    return await this.queryBus.execute(new GetRolesWithPaginateQuery(query));
   }
 
   @Get('avaiable-permission')
@@ -54,7 +64,7 @@ export class RolesController {
   @Get(':roleId')
   @RequirePermission(ResourceType.ROLE, ResourceAction.READ)
   async show(@Param('roleId') roleId: string): Promise<Role> {
-    return this.rolesService.show(roleId);
+    return this.queryBus.execute(new FindRoleQuery(roleId));
   }
 
   @Patch(':roleId')
@@ -64,12 +74,14 @@ export class RolesController {
     @Body() role: UpdateRoleDto,
     @CurrentUser() currentUser: User,
   ): Promise<Role> {
-    return this.rolesService.update(roleId, role, currentUser);
+    return this.commandBus.execute(
+      new UpdateRoleCommand(roleId, role, currentUser),
+    );
   }
 
   @Delete(':roleId')
   @RequirePermission(ResourceType.ROLE, ResourceAction.DELETE)
   async destroy(@Param('roleId') roleId: string): Promise<boolean> {
-    return this.rolesService.destroy(roleId);
+    return this.commandBus.execute(new DeleteRoleCommand(roleId));
   }
 }

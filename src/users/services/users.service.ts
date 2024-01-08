@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
-import { FindUserDto } from 'src/users/dto/find-user.dto';
+import { GetUsersWithPaginateDto } from 'src/users/dto/get-users-with-paginate.dto';
 import {
   QUERY_BATCHING_SIZE,
   USER,
@@ -60,7 +60,7 @@ export class UsersService {
   }
 
   async findWithPagination(
-    params: FindUserDto,
+    params: GetUsersWithPaginateDto,
   ): Promise<ResponsePaginationType<User>> {
     const { limit, page, ...rest } = params;
 

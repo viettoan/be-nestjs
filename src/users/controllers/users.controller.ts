@@ -13,7 +13,7 @@ import {
   UploadedFile,
   Res,
 } from '@nestjs/common';
-import { FindUserDto } from '../dto/find-user.dto';
+import { GetUsersWithPaginateDto } from '../dto/get-users-with-paginate.dto';
 import { UsersService } from '../services/users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -71,7 +71,7 @@ export class UsersController {
   @HttpCode(200)
   @RequirePermission(ResourceType.USER, ResourceAction.READ)
   async index(
-    @Query() query: FindUserDto,
+    @Query() query: GetUsersWithPaginateDto,
   ): Promise<ResponsePaginationType<User>> {
     return await this.usersService.findWithPagination(query);
   }

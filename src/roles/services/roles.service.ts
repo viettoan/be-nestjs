@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { RolesRepository } from '../repositories/roles.repository';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { Role } from '../entities/role.entity';
-import { FindRoleQueryDto } from '../dto/find-role-query.dto';
 import { CreateSearchLikeQueryUtil } from 'src/common/utils/create-search-like-query.util';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { User } from 'src/users/entities/mongodb/user.entity';
+import { GetRolesWithPaginateDto } from '../dto/get-roles-with-paginate.dto';
 
 @Injectable()
 export class RolesService {
@@ -20,7 +20,7 @@ export class RolesService {
   }
 
   async findWithPaginate(
-    query: FindRoleQueryDto,
+    query: GetRolesWithPaginateDto,
   ): Promise<ResponsePaginationType<Role>> {
     const { limit, page, ...rest } = query;
 
