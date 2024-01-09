@@ -7,6 +7,8 @@ import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
 import { CqrsModule } from '@nestjs/cqrs';
 import { QueryHandlers } from './queries/handlers';
 import { CommandHandlers } from './commands/handlers';
+import { EventHandlers } from './events/handlers';
+import { RoleSagas } from './sagas/role.sagas';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { CommandHandlers } from './commands/handlers';
     { provide: 'RolesRepositoryInterface', useClass: RolesRepository },
     ...QueryHandlers,
     ...CommandHandlers,
+    ...EventHandlers,
+    RoleSagas,
   ],
 })
 export class RolesModule {}
