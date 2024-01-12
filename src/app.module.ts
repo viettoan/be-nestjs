@@ -15,6 +15,7 @@ import { RedisModule } from './redis/redis.module';
 import { KafkaModule } from './kafka/kafka.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MONGO_CONNECTION_NAME } from './common/constant/database.constant';
+import { HealthcheckModule } from './healthcheck/healthcheck.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { MONGO_CONNECTION_NAME } from './common/constant/database.constant';
     //   inject: [ConfigService],
     // }),
     // RedisModule,
+    HealthcheckModule,
     EmailModule,
     AuthModule,
     UsersModule,

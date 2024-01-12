@@ -39,6 +39,7 @@ Project base using NestJS
 &#9745; Integrate Task Schedule <br>
 &#9745; Integrate CQRS Pattern <br>
 &#9744; Unit Test <br>
+&#9745; Healthcheck <br>
 
 ## Installation
 
