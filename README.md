@@ -27,17 +27,18 @@
 Project base using NestJS
 
 ## Features
-- [X] Integrate Swagger
-- [X] Integrate SQL DB: MySQL
-- [X] Integrate NoSQL DB: MongoDB
-- [X] Manage Users: CRUD, Send mail, Upload file
-- [X] Permission Policy using Passport
-- [X] Integrate Redis
-- [X] Integrate Kafka
-- [ ] Integrate GraphQL
-- [ ] Integrate realtime communication
-- [X] Integrate Task Schedule
-- [ ] Integrate CQRS Pattern
+&#9745; Integrate Swagger <br>
+&#9745; Integrate SQL DB: MySQL <br>
+&#9745; Integrate NoSQL DB: MongoDB <br>
+&#9745; Manage Users: CRUD, Send mail, Upload file <br>
+&#9745; Permission Policy using Passport <br>
+&#9745; Integrate Redis <br>
+&#9745; Integrate Kafka <br>
+&#9744; Integrate GraphQL <br>
+&#9745; Integrate websocket: socket.io, redis adapter <br>
+&#9745; Integrate Task Schedule <br>
+&#9745; Integrate CQRS Pattern <br>
+&#9744; Unit Test <br>
 
 ## Installation
 

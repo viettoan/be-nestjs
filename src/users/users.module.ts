@@ -7,6 +7,7 @@ import { UsersRepository } from './repositories/users.repository';
 import { CreateRootUserCommand } from './commands/create-root-user.command';
 import { CommandModule } from 'nestjs-command';
 import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
+import { UsersGateway } from './users.gateway';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
     UsersService,
     { provide: 'UsersRepositoryInterface', useClass: UsersRepository },
     CreateRootUserCommand,
+    UsersGateway,
   ],
   exports: ['UsersRepositoryInterface'],
 })

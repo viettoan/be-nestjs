@@ -55,6 +55,11 @@ async function bootstrap() {
     },
   });
 
+  // Uncomment these lines to use the Redis adapter:
+  // const redisIoAdapter = new RedisIoAdapter(app);
+  // await redisIoAdapter.connectToRedis();
+  // app.useWebSocketAdapter(redisIoAdapter);
+
   await app.listen(port);
   logger.log(`Bootstrap app successfully, server listening on port: ${port}`);
 }
