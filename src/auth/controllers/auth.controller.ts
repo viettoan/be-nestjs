@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { LoginDto } from '../dto/login.dto';
-import { User } from 'src/users/entities/mongodb/user.entity';
+import { User } from 'src/entities/mongodb/user.entity';
 import { RequireAuthenticated } from 'src/common/decorators/require-authenticated.decorator';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserDocument } from '../entities/mongodb/user.entity';
-import { BaseRepository } from '../../common/repositories/mongodb/base.repository';
+import { User, UserDocument } from '../../entities/mongodb/user.entity';
+import { BaseRepository } from './base.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model, Types } from 'mongoose';
-import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
+import { UsersRepositoryInterface } from 'src/interface/repositories/mongodb/users.repository.interface';
 import { MONGO_CONNECTION_NAME } from 'src/common/constant/database.constant';
 
 @Injectable()

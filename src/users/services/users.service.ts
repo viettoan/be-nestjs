@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../entities/mongodb/user.entity';
+import { User } from '../../entities/mongodb/user.entity';
 import { EmailService } from '../../email/services/email.service';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';
 import { GetUsersWithPaginateDto } from 'src/users/dto/get-users-with-paginate.dto';
@@ -10,7 +10,7 @@ import {
 } from 'src/common/constant/app.constant';
 import { ConfigService } from '@nestjs/config';
 import { getUrlFromStorage } from 'src/common/utils/get-url-from-storage.util';
-import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
+import { UsersRepositoryInterface } from 'src/interface/repositories/mongodb/users.repository.interface';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';

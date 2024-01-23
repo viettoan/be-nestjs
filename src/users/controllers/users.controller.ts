@@ -20,7 +20,7 @@ import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { EXCEL_MIME_TYPE, USER } from 'src/common/constant/app.constant';
-import { User } from '../entities/mongodb/user.entity';
+import { User } from '../../entities/mongodb/user.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { CreateUserMultipartDto } from '../dto/create-user-multipart.dto';
 import { UpdateUserMultipartDto } from '../dto/update-user-multipart.dto';

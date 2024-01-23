@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
-import { RolesRepository } from 'src/roles/repositories/roles.repository';
+import { RolesRepository } from 'src/repositories/mongodb/roles.repository';
 import { DeleteRoleCommand } from '../impl/delete-role.command';
 
 @CommandHandler(DeleteRoleCommand)

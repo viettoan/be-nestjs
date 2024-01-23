@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UsersRepositoryInterface } from '../interface/repositories/users.repository.interface';
+import { UsersRepositoryInterface } from '../../interface/repositories/mongodb/users.repository.interface';
 import { ConfigService } from '@nestjs/config';
 import { Command } from 'nestjs-command';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';

@@ -1,8 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { FindRoleQuery } from '../impl/find-role.query';
 import { Inject } from '@nestjs/common';
-import { RolesRepository } from 'src/roles/repositories/roles.repository';
-import { Role } from 'src/roles/entities/role.entity';
+import { RolesRepository } from 'src/repositories/mongodb/roles.repository';
+import { Role } from 'src/entities/mongodb/role.entity';
 
 @QueryHandler(FindRoleQuery)
 export class FindRoleHandler implements IQueryHandler<FindRoleQuery> {

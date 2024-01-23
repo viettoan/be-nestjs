@@ -1,8 +1,8 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { StoreRoleCommand } from '../impl/store-role.command';
 import { Inject } from '@nestjs/common';
-import { RolesRepository } from 'src/roles/repositories/roles.repository';
-import { Role } from 'src/roles/entities/role.entity';
+import { RolesRepository } from 'src/repositories/mongodb/roles.repository';
+import { Role } from 'src/entities/mongodb/role.entity';
 import { StoredRoleEvent } from 'src/roles/events/impl/stored-role.event';
 
 @CommandHandler(StoreRoleCommand)

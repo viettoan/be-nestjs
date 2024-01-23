@@ -1,9 +1,9 @@
 import { FilterQuery, Model, PopulateOptions, SortOrder } from 'mongoose';
 import { PAGINATE_OPTIONS } from 'src/common/constant/app.constant';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
-import { BaseRepositoryInterface } from 'src/common/Interfaces/repositories/mongodb/base.repository.interface';
+import { BaseRepositoryInterface } from 'src/interface/repositories/mongodb/base.repository.interface';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
-import { User } from 'src/users/entities/mongodb/user.entity';
+import { User } from 'src/entities/mongodb/user.entity';
 
 export abstract class BaseRepository<Entity extends UserAware>
   implements BaseRepositoryInterface<Entity>

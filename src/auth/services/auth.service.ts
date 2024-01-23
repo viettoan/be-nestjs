@@ -1,12 +1,15 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { LoginDto } from '../dto/login.dto';
-import { User } from 'src/users/entities/mongodb/user.entity';
-import { UsersRepositoryInterface } from 'src/users/interface/repositories/users.repository.interface';
+import { User } from 'src/entities/mongodb/user.entity';
+import { UsersRepositoryInterface } from 'src/interface/repositories/mongodb/users.repository.interface';
 import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
-import { Session, SessionDocument } from '../entities/session.entity';
-import { SessionsRepositoryInterface } from '../interfaces/repositories/session.repository.interface';
+import {
+  Session,
+  SessionDocument,
+} from '../../entities/mongodb/session.entity';
+import { SessionsRepositoryInterface } from '../../interface/repositories/mongodb/session.repository.interface';
 import { UserIsConfirmAccount } from 'src/users/enum/user-is-confirm-account.enum';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { createBcryptHashPassword } from 'src/common/utils/helpers.util';

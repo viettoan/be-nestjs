@@ -4,7 +4,7 @@ import { ResourceType } from '../enums/resource-type.enum';
 import { ResourceAction } from '../enums/resource-action.enum';
 import { ResourceActionPermissionValue } from '../enums/resource-action-permission-value.enum';
 import { checkUserHasPermission } from 'src/users/ultils/check-user-have-permission';
-import { User } from 'src/users/entities/mongodb/user.entity';
+import { User } from 'src/entities/mongodb/user.entity';
 
 @Injectable()
 export class ResourcePermissionGuard implements CanActivate {

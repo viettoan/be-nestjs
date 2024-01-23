@@ -1,4 +1,4 @@
-import { ResourceActionPermission } from '../types/resouce-action-permission.type';
+import { ResourceActionPermission } from '../../roles/types/resouce-action-permission.type';
 import { UserAware } from 'src/common/enitites/user-aware.entity';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';

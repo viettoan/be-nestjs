@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Session, SessionSchema } from './entities/session.entity';
-import { SessionsRepository } from './repositories/sessions.repository';
+import { Session, SessionSchema } from '../entities/mongodb/session.entity';
+import { SessionsRepository } from '../repositories/mongodb/sessions.repository';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './controllers/auth.controller';
 import { PassportModule } from '@nestjs/passport';

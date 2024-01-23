@@ -1,7 +1,7 @@
 import { ResourceActionPermissionValue } from 'src/roles/enums/resource-action-permission-value.enum';
 import { ResourceAction } from 'src/roles/enums/resource-action.enum';
 import { ResourceType } from 'src/roles/enums/resource-type.enum';
-import { User } from '../entities/mongodb/user.entity';
+import { User } from '../../entities/mongodb/user.entity';
 import { UserIsConfirmAccount } from '../enum/user-is-confirm-account.enum';
 import { ConfigService } from '@nestjs/config';
 

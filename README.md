@@ -30,7 +30,7 @@ Project base using NestJS
 &#9745; Integrate Swagger <br>
 &#9745; Integrate SQL DB: MySQL <br>
 &#9745; Integrate NoSQL DB: MongoDB <br>
-&#9745; Manage Users: CRUD, Send mail, Upload file <br>
+&#9745; Manage Users: CRUD, Send mail, Upload file, import, export <br>
 &#9745; Permission Policy using Passport <br>
 &#9745; Integrate Redis <br>
 &#9745; Integrate Kafka <br>

@@ -1,6 +1,6 @@
 import { FilterQuery, PopulateOptions, SortOrder } from 'mongoose';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
-import { User } from 'src/users/entities/mongodb/user.entity';
+import { User } from 'src/entities/mongodb/user.entity';
 
 export interface BaseRepositoryInterface<Entity> {
   store(data: Partial<Entity>, user?: User): Promise<Entity>;

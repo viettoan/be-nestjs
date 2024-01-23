@@ -11,7 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { GetRolesWithPaginateDto } from '../dto/get-roles-with-paginate.dto';
-import { Role } from '../entities/role.entity';
+import { Role } from '../../entities/mongodb/role.entity';
 import { ResponsePaginationType } from 'src/common/types/response-pagination.type';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { RoleAvaiablePermissionMap } from 'src/common/types/role-avaiable-permission-map';
@@ -20,7 +20,7 @@ import { RequirePermission } from 'src/common/decorators/require-permission.deco
 import { ResourceType } from '../enums/resource-type.enum';
 import { ResourceAction } from '../enums/resource-action.enum';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { User } from 'src/users/entities/mongodb/user.entity';
+import { User } from 'src/entities/mongodb/user.entity';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FindRoleQuery } from '../queries/impl/find-role.query';
 import { GetRolesWithPaginateQuery } from '../queries/impl/get-roles-with-paginate.query';
